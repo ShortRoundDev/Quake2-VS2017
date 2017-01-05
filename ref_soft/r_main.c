@@ -1352,6 +1352,7 @@ GetRefAPI
 
 @@@@@@@@@@@@@@@@@@@@@
 */
+__declspec(dllexport)
 refexport_t GetRefAPI (refimport_t rimp)
 {
 	refexport_t	re;
