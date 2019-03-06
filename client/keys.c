@@ -642,6 +642,8 @@ void Key_Bindlist_f (void)
 Key_Init
 ===================
 */
+/**Maps key input to ascii characters for console input,
+  *including a map of shift keys*/
 void Key_Init (void)
 {
 	int		i;

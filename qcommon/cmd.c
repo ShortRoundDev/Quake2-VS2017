@@ -75,6 +75,7 @@ byte		defer_text_buf[8192];
 Cbuf_Init
 ============
 */
+/**Initializes the command text buffer for the console*/
 void Cbuf_Init (void)
 {
 	SZ_Init (&cmd_text, cmd_text_buf, sizeof(cmd_text_buf));
@@ -260,6 +261,7 @@ the client and server initialize for the first time.
 Other commands are added late, after all initialization is complete.
 ===============
 */
+/**@COLLIN: Stopped here, 3/5/2019*/
 void Cbuf_AddEarlyCommands (qboolean clear)
 {
 	int		i;
@@ -878,6 +880,7 @@ void Cmd_List_f (void)
 Cmd_Init
 ============
 */
+/**Initializes basic commands in Quake 2 Console language*/
 void Cmd_Init (void)
 {
 //

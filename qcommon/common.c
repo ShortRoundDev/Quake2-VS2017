@@ -981,6 +981,7 @@ void COM_ClearArgv (int arg)
 COM_InitArgv
 ================
 */
+/**Passes valid command line arguments to the globals `com_argv` and `com_argc`*/
 void COM_InitArgv (int argc, char **argv)
 {
 	int		i;
@@ -1395,6 +1396,8 @@ void Com_Error_f (void)
 Qcommon_Init
 =================
 */
+/** Initializes Z Memory management, global character buffers, Console commands,
+  * Console variables, and processes command line arguments */
 void Qcommon_Init (int argc, char **argv)
 {
 	char	*s;
@@ -1402,18 +1405,24 @@ void Qcommon_Init (int argc, char **argv)
 	if (setjmp (abortframe) )
 		Sys_Error ("Error during initialization");
 
+	//Initialize Z Memory chain
 	z_chain.next = z_chain.prev = &z_chain;
 
 	// prepare enough of the subsystems to handle
 	// cvar and command buffer management
 	COM_InitArgv (argc, argv);
 
+	//Initialize swap methods based on endianness
 	Swap_Init ();
+	//Initializes command input string buffer
 	Cbuf_Init ();
 
+	//Registers the basic commands for the command console
 	Cmd_Init ();
+	//Registers commands related to Console Variables
 	Cvar_Init ();
 
+	//Map keys to characters for console input
 	Key_Init ();
 
 	// we need to add the early commands twice, because

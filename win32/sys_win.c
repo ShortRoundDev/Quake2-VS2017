@@ -554,6 +554,7 @@ ParseCommandLine
 
 ==================
 */
+/**Sets global Argc and Argv */
 void ParseCommandLine (LPSTR lpCmdLine)
 {
 	argc = 1;
@@ -561,17 +562,22 @@ void ParseCommandLine (LPSTR lpCmdLine)
 
 	while (*lpCmdLine && (argc < MAX_NUM_ARGVS))
 	{
+		/*Skip non-parseable characters */
 		while (*lpCmdLine && ((*lpCmdLine <= 32) || (*lpCmdLine > 126)))
 			lpCmdLine++;
 
+		/*Begin parsing this current word*/
 		if (*lpCmdLine)
 		{
+			/*Assign*/
 			argv[argc] = lpCmdLine;
 			argc++;
 
+			/*Iterate pointer through the current argv*/
 			while (*lpCmdLine && ((*lpCmdLine > 32) && (*lpCmdLine <= 126)))
 				lpCmdLine++;
 
+			/*Slice argv with null terminator*/
 			if (*lpCmdLine)
 			{
 				*lpCmdLine = 0;
@@ -591,6 +597,7 @@ WinMain
 */
 HINSTANCE	global_hInstance;
 
+/**Windows Entrypoint*/
 int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
     MSG				msg;
@@ -603,6 +610,7 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 
 	global_hInstance = hInstance;
 
+	/*Set GLOBAL argc and argv to command line args*/
 	ParseCommandLine (lpCmdLine);
 
 	// if we find the CD, add a +set cddir xxx command line
