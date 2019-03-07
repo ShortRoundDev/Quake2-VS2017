@@ -747,6 +747,7 @@ static WSADATA		winsockdata;
 NET_Init
 ====================
 */
+/**Initialize Winsock and sets global nodup noipx and net_shownet variables*/
 void NET_Init (void)
 {
 	WORD	wVersionRequested; 

@@ -242,6 +242,7 @@ Con_CheckResize
 If the line width has changed, reformat the buffer.
 ================
 */
+/**If the line width has changed, reformat the buffer*/
 void Con_CheckResize (void)
 {
 	int		i, j, width, oldwidth, oldtotallines, numlines, numchars;
@@ -301,6 +302,7 @@ void Con_CheckResize (void)
 Con_Init
 ================
 */
+/**Initialize client console. Adds client console commands*/
 void Con_Init (void)
 {
 	con.linewidth = -1;
@@ -314,11 +316,17 @@ void Con_Init (void)
 //
 	con_notifytime = Cvar_Get ("con_notifytime", "3", 0);
 
+	//Opens or closes the console. Bound to `/~
 	Cmd_AddCommand ("toggleconsole", Con_ToggleConsole_f);
+	//Same as toggleconsole
 	Cmd_AddCommand ("togglechat", Con_ToggleChat_f);
+	//Prompt user for message to all users
 	Cmd_AddCommand ("messagemode", Con_MessageMode_f);
+	//Prompt user for message to teammates
 	Cmd_AddCommand ("messagemode2", Con_MessageMode2_f);
+	//Clear the console of all text
 	Cmd_AddCommand ("clear", Con_Clear_f);
+	//Dump console text into a file: `condump [FILENAME]` automatically uses .txt
 	Cmd_AddCommand ("condump", Con_Dump_f);
 	con.initialized = true;
 }

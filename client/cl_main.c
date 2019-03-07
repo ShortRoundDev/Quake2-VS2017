@@ -1777,6 +1777,7 @@ void CL_Frame (int msec)
 CL_Init
 ====================
 */
+/**Initializes Client. Console commands*/
 void CL_Init (void)
 {
 	if (dedicated->value)
@@ -1784,6 +1785,7 @@ void CL_Init (void)
 
 	// all archived variables will now be loaded
 
+	//Initialize console commands
 	Con_Init ();	
 #if defined __linux__ || defined __sgi
 	S_Init ();	

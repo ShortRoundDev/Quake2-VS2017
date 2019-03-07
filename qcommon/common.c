@@ -1429,46 +1429,67 @@ void Qcommon_Init (int argc, char **argv)
 	// a basedir or cddir needs to be set before execing
 	// config files, but we want other parms to override
 	// the settings of the config files
+	//
+	// Preserve com_argv for the next invokation of this
+	// function so they can be run again
 	Cbuf_AddEarlyCommands (false);
 	Cbuf_Execute ();
 
+	//Initialie file system variables
 	FS_InitFilesystem ();
 
+	//Execute default and config first
 	Cbuf_AddText ("exec default.cfg\n");
 	Cbuf_AddText ("exec config.cfg\n");
 
+	//Clear argv after this invokation
 	Cbuf_AddEarlyCommands (true);
 	Cbuf_Execute ();
 
 	//
 	// init commands and vars
 	//
+	// z_stats gets info about memory usage
     Cmd_AddCommand ("z_stats", Z_Stats_f);
+	// error kills the game with the specified error message
     Cmd_AddCommand ("error", Com_Error_f);
 
+	// Shows timing information
 	host_speeds = Cvar_Get ("host_speeds", "0", 0);
+	// Shows map statistics
 	log_stats = Cvar_Get ("log_stats", "0", 0);
+	// Enables developer mode
 	developer = Cvar_Get ("developer", "0", 0);
+	// The scale at which the game relates to real time
 	timescale = Cvar_Get ("timescale", "1", 0);
+	// Display ALL game frames, slowing down the game
 	fixedtime = Cvar_Get ("fixedtime", "0", 0);
+	// Toggle logging console messages
 	logfile_active = Cvar_Get ("logfile", "0", 0);
+	// Display network packet tracing information
 	showtrace = Cvar_Get ("showtrace", "0", 0);
+
+	//Dedicated server mode 1/0
 #ifdef DEDICATED_ONLY
 	dedicated = Cvar_Get ("dedicated", "1", CVAR_NOSET);
 #else
 	dedicated = Cvar_Get ("dedicated", "0", CVAR_NOSET);
 #endif
 
+	//Set version
 	s = va("%4.2f %s %s %s", VERSION, CPUSTRING, __DATE__, BUILDSTRING);
 	Cvar_Get ("version", s, CVAR_SERVERINFO|CVAR_NOSET);
 
-
+	//Add quit command to dedicated servers
 	if (dedicated->value)
 		Cmd_AddCommand ("quit", Com_Quit);
 
+	//Initialize OS-related I/O for Dedicated Server and Version check
 	Sys_Init ();
 
+	//Initialize Winsock
 	NET_Init ();
+	//Grab a port
 	Netchan_Init ();
 
 	SV_Init ();

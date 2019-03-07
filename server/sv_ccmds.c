@@ -1021,6 +1021,7 @@ void SV_ServerCommand_f (void)
 SV_InitOperatorCommands
 ==================
 */
+/**Adds admin commands for server*/
 void SV_InitOperatorCommands (void)
 {
 	Cmd_AddCommand ("heartbeat", SV_Heartbeat_f);

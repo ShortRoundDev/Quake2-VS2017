@@ -942,41 +942,61 @@ SV_Init
 Only called at quake2.exe startup, not for each game
 ===============
 */
+/**Set initial server variables and add admin commands*/
 void SV_Init (void)
 {
 	SV_InitOperatorCommands	();
 
+	//The Password used to access admin commands. Definitely change this, since it defaults to "" for some reason
 	rcon_password = Cvar_Get ("rcon_password", "", 0);
+	//Difficulty setting
 	Cvar_Get ("skill", "1", 0);
+	//Deathmatch gamemode
 	Cvar_Get ("deathmatch", "0", CVAR_LATCH);
+	//Coop gamemode
 	Cvar_Get ("coop", "0", CVAR_LATCH);
+	//Deathmatch settings, see https://www.eecis.udel.edu/~portnoi/quake/quakeiicom.html for details (search dmflags)
 	Cvar_Get ("dmflags", va("%i", DF_INSTANT_ITEMS), CVAR_SERVERINFO);
+	//Kill limit before mapchange
 	Cvar_Get ("fraglimit", "0", CVAR_SERVERINFO);
+	//Match time limit
 	Cvar_Get ("timelimit", "0", CVAR_SERVERINFO);
+	//Allows cheats
 	Cvar_Get ("cheats", "0", CVAR_SERVERINFO|CVAR_LATCH);
+	//Read only, quake 2 game protocol version
 	Cvar_Get ("protocol", va("%i", PROTOCOL_VERSION), CVAR_SERVERINFO|CVAR_NOSET);;
+	//Max number of players allowed
 	maxclients = Cvar_Get ("maxclients", "1", CVAR_SERVERINFO | CVAR_LATCH);
+	//Server name
 	hostname = Cvar_Get ("hostname", "noname", CVAR_SERVERINFO | CVAR_ARCHIVE);
+	//Number of seconds before a client is dropped after no response
 	timeout = Cvar_Get ("timeout", "125", 0);
+	//Minutes before a frozen character is removed
 	zombietime = Cvar_Get ("zombietime", "2", 0);
 	sv_showclamp = Cvar_Get ("showclamp", "0", 0);
+	//Pause or unpause the game
 	sv_paused = Cvar_Get ("paused", "0", 0);
 	sv_timedemo = Cvar_Get ("timedemo", "0", 0);
+	//enforce time measurements between client and server
 	sv_enforcetime = Cvar_Get ("sv_enforcetime", "0", 0);
+	//allow_download_* set by both client and server to determine if custom files should be downloaded
 	allow_download = Cvar_Get ("allow_download", "0", CVAR_ARCHIVE);
 	allow_download_players  = Cvar_Get ("allow_download_players", "0", CVAR_ARCHIVE);
 	allow_download_models = Cvar_Get ("allow_download_models", "1", CVAR_ARCHIVE);
 	allow_download_sounds = Cvar_Get ("allow_download_sounds", "1", CVAR_ARCHIVE);
 	allow_download_maps	  = Cvar_Get ("allow_download_maps", "1", CVAR_ARCHIVE);
 
+	//Toggle reloading of gamedata for the map
 	sv_noreload = Cvar_Get ("sv_noreload", "0", 0);
-
+	//Maximum air velocity. when 0, you simply fall or fly, with no control of yourself once you're in the air
 	sv_airaccelerate = Cvar_Get("sv_airaccelerate", "0", CVAR_LATCH);
-
+	//Toggles whether or not to list in master server list
 	public_server = Cvar_Get ("public", "0", 0);
 
+	//Number of times a client can reconnect
 	sv_reconnect_limit = Cvar_Get ("sv_reconnect_limit", "3", CVAR_ARCHIVE);
 
+	//Initialize network message buffer size
 	SZ_Init (&net_message, net_message_buffer, sizeof(net_message_buffer));
 }
 

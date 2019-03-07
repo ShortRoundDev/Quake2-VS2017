@@ -192,6 +192,8 @@ void Cbuf_ExecuteText (int exec_when, char *text)
 Cbuf_Execute
 ============
 */
+
+/**Executes all commands in the Command Buffer*/
 void Cbuf_Execute (void)
 {
 	int		i;
@@ -261,7 +263,8 @@ the client and server initialize for the first time.
 Other commands are added late, after all initialization is complete.
 ===============
 */
-/**@COLLIN: Stopped here, 3/5/2019*/
+/**Adds +set commands from global `argv` to Command Buffer, clears the argument list if specified
+  *\param[in] clear Clears the command argument list if true*/
 void Cbuf_AddEarlyCommands (qboolean clear)
 {
 	int		i;
@@ -810,6 +813,8 @@ A complete command line has been parsed, so try to execute it
 FIXME: lookupnoadd the token to speed search?
 ============
 */
+/**Executes the provided command string
+  *\param[in] text The command string*/
 void	Cmd_ExecuteString (char *text)
 {	
 	cmd_function_t	*cmd;

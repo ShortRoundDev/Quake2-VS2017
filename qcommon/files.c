@@ -838,8 +838,11 @@ char *FS_NextPath (char *prevpath)
 FS_InitFilesystem
 ================
 */
+/**Creates path commands in the console, sets global directory variables
+  *fs_basedir, fs_cddir, fs_base_searchpaths, and fs_gamedirvar*/
 void FS_InitFilesystem (void)
 {
+	//Add Path-related commands
 	Cmd_AddCommand ("path", FS_Path_f);
 	Cmd_AddCommand ("link", FS_Link_f);
 	Cmd_AddCommand ("dir", FS_Dir_f );

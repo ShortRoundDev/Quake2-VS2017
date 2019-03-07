@@ -124,6 +124,7 @@ If the variable already exists, the value will not be set
 The flags will be or'ed in if the variable exists.
 ============
 */
+/**If the provided var_name exists, return it. If not, set it to var_value*/
 cvar_t *Cvar_Get (char *var_name, char *var_value, int flags)
 {
 	cvar_t	*var;

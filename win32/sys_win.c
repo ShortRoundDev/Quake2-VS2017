@@ -203,6 +203,7 @@ void	Sys_CopyProtect (void)
 Sys_Init
 ================
 */
+/**Gets OS version and hooks stdin/stdout for dedicated server*/
 void Sys_Init (void)
 {
 	OSVERSIONINFO	vinfo;
