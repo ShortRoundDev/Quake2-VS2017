@@ -80,6 +80,7 @@ static void M_Banner( char *name )
 	re.DrawPic( viddef.width / 2 - w / 2, viddef.height / 2 - 110, name );
 }
 
+/**Adds a menu option*/
 void M_PushMenu ( void (*draw) (void), const char *(*key) (int k) )
 {
 	int		i;
@@ -381,7 +382,7 @@ MAIN MENU
 */
 #define	MAIN_ITEMS	5
 
-
+/**COLLIN STOPPED ERE 3/8/2019 M_Init > M_Menu_Main_F*/
 void M_Main_Draw (void)
 {
 	int i;
@@ -3946,6 +3947,7 @@ void M_Menu_Quit_f (void)
 M_Init
 =================
 */
+/**Initialize menu options*/
 void M_Init (void)
 {
 	Cmd_AddCommand ("menu_main", M_Menu_Main_f);

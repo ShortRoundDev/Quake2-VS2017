@@ -1795,11 +1795,14 @@ void CL_Init (void)
 	S_Init ();	// sound must be initialized after window is created
 #endif
 	
+	//Initialize video
 	V_Init ();
 	
+	//Initialize network messaging
 	net_message.data = net_message_buffer;
 	net_message.maxsize = sizeof(net_message_buffer);
 
+	//Add menu options
 	M_Init ();	
 	
 	SCR_Init ();

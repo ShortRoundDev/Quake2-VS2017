@@ -554,7 +554,7 @@ void VID_FreeReflib (void)
 VID_LoadRefresh
 ==============
 */
-/**@COLLIN: STOPPED HERE, DESCENDED FROM cl_main.c > vid_init > vid_checkchanges*/
+/**Exchange APIs, reset video loading*/
 qboolean VID_LoadRefresh( char *name )
 {
 	refimport_t	ri;
@@ -638,6 +638,7 @@ is to check to see if any of the video mode parameters have changed, and if they
 update the rendering DLL and/or video mode to match.
 ============
 */
+/**Check whether or not the video parameters have changed, then reload if so*/
 void VID_CheckChanges (void)
 {
 	char name[100];
