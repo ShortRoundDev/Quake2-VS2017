@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // cl_ents.c -- entity parsing and management
 
 #include "client.h"
-
+#include "../game/game.h"
 
 extern	struct model_s	*cl_mod_powerscreen;
 
@@ -1362,7 +1362,7 @@ void CL_CalcViewValues (void)
 	i = (cl.frame.serverframe - 1) & UPDATE_MASK;
 	oldframe = &cl.frames[i];
 	if (oldframe->serverframe != cl.frame.serverframe-1 || !oldframe->valid)
-		oldframe = &cl.frame;		// previous frame was dropped or involid
+		oldframe = &cl.frame;		// previous fraeme was dropped or involid
 	ops = &oldframe->playerstate;
 
 	// see if the player entity was teleported this frame
@@ -1370,6 +1370,8 @@ void CL_CalcViewValues (void)
 		|| abs(ops->pmove.origin[1] - ps->pmove.origin[1]) > 256*8
 		|| abs(ops->pmove.origin[2] - ps->pmove.origin[2]) > 256*8)
 		ops = ps;		// don't interpolate
+
+	
 
 	ent = &cl_entities[cl.playernum+1];
 	lerp = cl.lerpfrac;
@@ -1382,9 +1384,9 @@ void CL_CalcViewValues (void)
 		backlerp = 1.0 - lerp;
 		for (i=0 ; i<3 ; i++)
 		{
-			cl.refdef.vieworg[i] = cl.predicted_origin[i] + ops->viewoffset[i] 
-				+ cl.lerpfrac * (ps->viewoffset[i] - ops->viewoffset[i])
-				- backlerp * cl.prediction_error[i];
+			cl.refdef.vieworg[i] = ops->pmove.origin[i] * 0.125 + ops->viewoffset[i]
+				+ lerp * (ps->pmove.origin[i] * 0.125 + ps->viewoffset[i]
+					- (ops->pmove.origin[i] * 0.125 + ops->viewoffset[i]));
 		}
 
 		// smooth out stair climbing
@@ -1394,17 +1396,20 @@ void CL_CalcViewValues (void)
 	}
 	else
 	{	// just use interpolated values
-		for (i=0 ; i<3 ; i++)
-			cl.refdef.vieworg[i] = ops->pmove.origin[i]*0.125 + ops->viewoffset[i] 
-				+ lerp * (ps->pmove.origin[i]*0.125 + ps->viewoffset[i] 
-				- (ops->pmove.origin[i]*0.125 + ops->viewoffset[i]) );
+		for (i = 0; i < 3; i++) {
+			cl.refdef.vieworg[i] = ops->pmove.origin[i] * 0.125 + ops->viewoffset[i]
+				+ lerp * (ps->pmove.origin[i] * 0.125 + ps->viewoffset[i]
+					- (ops->pmove.origin[i] * 0.125 + ops->viewoffset[i]));
+		}
+			
 	}
 
 	// if not running a demo or on a locked frame, add the local angle movement
 	if ( cl.frame.playerstate.pmove.pm_type < PM_DEAD )
 	{	// use predicted values
-		for (i=0 ; i<3 ; i++)
+		for (i = 0; i < 3; i++) {
 			cl.refdef.viewangles[i] = cl.predicted_angles[i];
+		}
 	}
 	else
 	{	// just use interpolated values
@@ -1424,8 +1429,16 @@ void CL_CalcViewValues (void)
 	for (i=0 ; i<4 ; i++)
 		cl.refdef.blend[i] = ps->blend[i];
 
-	// add the weapon
-	CL_AddViewWeapon (ps, ops);
+	/* COLLIN: CL.refdef is the main struct for view angle and camera origin.
+	THIS position here is the last stop for these before rendering.
+	cl.refdef.origin sets camera position and cl.refdef.viewangles sets the
+	camera angles */
+	cl.refdef.vieworg[0] -= 150;
+	cl.refdef.vieworg[2] += 150;
+	cl.refdef.viewangles[0] = 45;
+	cl.refdef.viewangles[1] = 0;
+	cl.refdef.viewangles[2] = 0;
+	//CL_AddViewWeapon (ps, ops);
 }
 
 /*

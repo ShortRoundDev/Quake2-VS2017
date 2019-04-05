@@ -50,6 +50,7 @@
     <ClCompile Include="qcommon\md4.c" />
     <ClCompile Include="qcommon\net_chan.c" />
     <ClCompile Include="qcommon\pmove.c" />
+    <ClCompile Include="RenderMenu.c" />
     <ClCompile Include="server\sv_ccmds.c" />
     <ClCompile Include="server\sv_ents.c" />
     <ClCompile Include="server\sv_game.c" />

@@ -38,6 +38,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
 // game.h -- game dll information visible to server
+#include <libxml/parser.h>
+#include <menu.h>
 
 #define	GAME_API_VERSION	3
 
@@ -56,6 +58,7 @@ SOLID_TRIGGER,		// only touch when inside, after moving
 SOLID_BBOX,			// touch on edge
 SOLID_BSP			// bsp clip, touch on edge
 } solid_t;
+
 
 //===============================================================
 
@@ -192,8 +195,12 @@ typedef struct
 	void	(*AddCommandString) (char *text);
 
 	void	(*DebugGraph) (float value, int color);
-} game_import_t;
+	void	(*GetCursorPos) (long *x, long *y);
+	void	(*PLook) (float pitch, float yaw, float roll, edict_t* ent);
 
+	void	(*ProjectCursor) (long x, long y, float *vector);
+
+} game_import_t;
 //
 // functions exported by the game subsystem
 //
@@ -249,6 +256,11 @@ typedef struct
 	int			edict_size;
 	int			num_edicts;		// current number, <= max_edicts
 	int			max_edicts;
+	struct edict_s *player;
+
+	struct MenuRenderQueue* RenderQueue;
 } game_export_t;
+
+struct MenuRenderQueue Queue;
 
 game_export_t *GetGameApi (game_import_t *import);

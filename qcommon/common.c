@@ -1492,7 +1492,9 @@ void Qcommon_Init (int argc, char **argv)
 	//Grab a port
 	Netchan_Init ();
 
+	//Init Server
 	SV_Init ();
+	//Init Client
 	CL_Init ();
 
 	// add + commands from command line
@@ -1518,6 +1520,7 @@ void Qcommon_Init (int argc, char **argv)
 Qcommon_Frame
 =================
 */
+/**Run frame*/
 void Qcommon_Frame (int msec)
 {
 	char	*s;
@@ -1526,6 +1529,7 @@ void Qcommon_Frame (int msec)
 	if (setjmp (abortframe) )
 		return;			// an ERR_DROP was thrown
 
+	//Write log
 	if ( log_stats->modified )
 	{
 		log_stats->modified = false;
@@ -1570,6 +1574,7 @@ void Qcommon_Frame (int msec)
 		c_pointcontents = 0;
 	}
 
+	//Get console input
 	do
 	{
 		s = Sys_ConsoleInput ();

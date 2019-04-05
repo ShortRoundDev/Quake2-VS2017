@@ -1403,13 +1403,16 @@ void CL_Precache_f (void)
 CL_InitLocal
 =================
 */
+/**Adds all the commands relevant to the client. Look angle, skin, chat functions, etc.*/
 void CL_InitLocal (void)
 {
 	cls.state = ca_disconnected;
 	cls.realtime = Sys_Milliseconds ();
 
+	//Initialize input commands
 	CL_InitInput ();
 
+	//Server addresses for address books
 	adr0 = Cvar_Get( "adr0", "", CVAR_ARCHIVE );
 	adr1 = Cvar_Get( "adr1", "", CVAR_ARCHIVE );
 	adr2 = Cvar_Get( "adr2", "", CVAR_ARCHIVE );
@@ -1674,11 +1677,13 @@ CL_Frame
 
 ==================
 */
+/** Run client logic */
 void CL_Frame (int msec)
 {
 	static int	extratime;
 	static int  lasttimecalled;
 
+	//Don't run if dedicated server
 	if (dedicated->value)
 		return;
 
@@ -1805,15 +1810,21 @@ void CL_Init (void)
 	//Add menu options
 	M_Init ();	
 	
+	//Init Screen
 	SCR_Init ();
 	cls.disable_screen = true;	// don't draw yet
 
+	//Initialize songs from CD Audio
 	CDAudio_Init ();
+	//Initialize client commands
 	CL_InitLocal ();
+	//Initialize input
 	IN_Init ();
 
 //	Cbuf_AddText ("exec autoexec.cfg\n");
+	// Run autoexec.cfg
 	FS_ExecAutoexec ();
+	//Run commands in buffer (autoexec)
 	Cbuf_Execute ();
 
 }

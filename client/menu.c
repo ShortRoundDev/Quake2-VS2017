@@ -4000,7 +4000,6 @@ void M_Draw (void)
 	}
 }
 
-
 /*
 =================
 M_Keydown

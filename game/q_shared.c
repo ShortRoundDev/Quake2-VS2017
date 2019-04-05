@@ -1008,7 +1008,6 @@ float FloatNoSwap (float f)
 Swap_Init
 ================
 */
-/**Initializes global swap functions for various data types based on their Endianness*/
 void Swap_Init (void)
 {
 	byte	swaptest[2] = {1,0};

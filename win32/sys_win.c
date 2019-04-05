@@ -605,6 +605,21 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 	int				time, oldtime, newtime;
 	char			*cddir;
 
+	HWND			consoleHandle = NULL;
+
+	const char*		Title = "Quake 2 Debug";
+
+	SetConsoleTitle(Title);
+
+	/*Collin's Debugging Console*/
+	AllocConsole();
+	freopen("conin$", "r", stdin);
+	freopen("conout$", "w", stdout);
+	freopen("conout$", "w", stderr);
+	consoleHandle = FindWindow(NULL, Title);
+	MoveWindow(consoleHandle, 1, 1, 680, 480, 1);
+	printf("[sys_win.c] Console initialized.\n");
+
     /* previous instances do not exist in Win32 */
     if (hPrevInstance)
         return 0;
@@ -632,10 +647,12 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 		}
 	}
 
+	//Initialize EVERYTHING!!!
 	Qcommon_Init (argc, argv);
 	oldtime = Sys_Milliseconds ();
 
     /* main window message loop */
+	// GAME LOOP
 	while (1)
 	{
 		// if at a full screen console, don't update unless needed
@@ -644,6 +661,7 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 			Sleep (1);
 		}
 
+		//Handle messages
 		while (PeekMessage (&msg, NULL, 0, 0, PM_NOREMOVE))
 		{
 			if (!GetMessage (&msg, NULL, 0, 0))
@@ -653,6 +671,7 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
    			DispatchMessage (&msg);
 		}
 
+		//Limit framerate to 1ms max?
 		do
 		{
 			newtime = Sys_Milliseconds ();
@@ -661,6 +680,7 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 //			Con_Printf ("time:%5.2f - %5.2f = %5.2f\n", newtime, oldtime, time);
 
 		//	_controlfp( ~( _EM_ZERODIVIDE /*| _EM_INVALID*/ ), _MCW_EM );
+		//
 		_controlfp( _PC_24, _MCW_PC );
 		Qcommon_Frame (time);
 

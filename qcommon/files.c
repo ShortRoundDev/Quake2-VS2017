@@ -562,6 +562,7 @@ char *FS_Gamedir (void)
 FS_ExecAutoexec
 =============
 */
+/**Executes autoexec.cfg at startup*/
 void FS_ExecAutoexec (void)
 {
 	char *dir;

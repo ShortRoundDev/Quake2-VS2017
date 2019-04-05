@@ -20,13 +20,32 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // r_main.c
 #include "gl_local.h"
 
+#define SWAP_ROWS_DOUBLE(a, b) { double *_tmp = a; (a) = (b); (b) = _tmp; }
+#define SWAP_ROWS_FLOAT(a, b) { float *_tmp = a; (a) = (b); (b) = _tmp; }
+#define MAT(m, r, c) (m)[(c) * 4 + (r)]
+
+#pragma comment(lib, "glu32.lib")
+
 void R_Clear (void);
+
+int myUnProject(GLfloat winx, GLfloat winy, GLfloat winz,
+	const GLfloat modelMatrix[16],
+	const GLfloat projMatrix[16],
+	const GLint viewport[4],
+	GLfloat *objx, GLfloat *objy, GLfloat *objz);
+
+void __gluMultMatricesd(const GLfloat  a[16], const GLfloat b[16],
+	GLfloat r[16]);
+
+void __gluMultMatrixVecd(const GLfloat matrix[16], const GLfloat in[4],
+	GLfloat out[4]);
 
 viddef_t	vid;
 
 refimport_t	ri;
 
 model_t		*r_worldmodel;
+
 
 float		gldepthmin, gldepthmax;
 
@@ -59,7 +78,10 @@ vec3_t	vright;
 vec3_t	r_origin;
 
 float	r_world_matrix[16];
+float	c_world_matrix[16];
 float	r_base_world_matrix[16];
+GLfloat r_projection[16];
+
 
 //
 // screen size info
@@ -724,6 +746,8 @@ void R_SetupGL (void)
 
 	qglCullFace(GL_FRONT);
 
+	qglGetFloatv(GL_PROJECTION_MATRIX, r_projection);
+
 	qglMatrixMode(GL_MODELVIEW);
     qglLoadIdentity ();
 
@@ -738,6 +762,13 @@ void R_SetupGL (void)
 //		qglTranslatef ( gl_state.camera_separation, 0, 0 );
 
 	qglGetFloatv (GL_MODELVIEW_MATRIX, r_world_matrix);
+
+	for (int i = 0; i < 4; i++) {
+		for (int j = 0; j < 4; j++) {
+			c_world_matrix[i * 4 + j] = r_world_matrix[i * 4 + j];
+		}
+	}
+	
 
 	//
 	// set drawing parms
@@ -1614,6 +1645,7 @@ void	Draw_Char (int x, int y, int c);
 void	Draw_TileClear (int x, int y, int w, int h, char *name);
 void	Draw_Fill (int x, int y, int w, int h, int c);
 void	Draw_FadeScreen (void);
+void	GL_Unproject(long x, long y, float *vector);
 
 /*
 @@@@@@@@@@@@@@@@@@@@@
@@ -1657,6 +1689,7 @@ refexport_t GetRefAPI (refimport_t rimp )
 	re.EndFrame = GLimp_EndFrame;
 
 	re.AppActivate = GLimp_AppActivate;
+	re.Unproject = GL_Unproject;
 
 	Swap_Init ();
 
@@ -1691,3 +1724,159 @@ void Com_Printf (char *fmt, ...)
 }
 
 #endif
+
+void GL_Unproject(long x, long y, float *vector) {
+	GLint viewport[4];
+	GLfloat winX, winY, winZ;
+	GLfloat posX = 0, posY = 0, posZ = 0;
+	GLfloat posFarX = 0, posFarY = 0, posFarZ = 0;
+
+	qglGetIntegerv(GL_VIEWPORT, viewport);
+
+	printf("IM: %d, %d\n", x, y);
+
+	winX = (float)x;
+	winY = (float)y;
+	printf("M: %f, %f\n", winX, winY);
+	qglReadPixels(x, y, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &winZ);
+
+	float Out[3];
+	float _x, _y, _z;
+	float __x, __y, __z;
+
+	//r_projection[15] = 1.0f;
+	if (!myUnProject(winX, winY, 1, c_world_matrix, r_projection, viewport, &_x, &_y, &_z)) {
+		return;
+	}
+
+	vector[0] = _x;
+	vector[1] = _y;
+	vector[2] = -_z;
+}
+
+int myUnProject(GLfloat winx, GLfloat winy, GLfloat winz,
+	const GLfloat modelMatrix[16],
+	const GLfloat projMatrix[16],
+	const GLint viewport[4],
+	GLfloat *objx, GLfloat *objy, GLfloat *objz)
+{
+
+	float finalMatrix[16];
+	float in[4];
+	float out[4];
+
+	if (winx == 0.0 || winy == 0.0)
+		printf("Fuck");
+
+	__gluMultMatricesd(modelMatrix, projMatrix, finalMatrix);
+	if (!__gluInvertMatrixd(finalMatrix, finalMatrix)) {
+		return(GL_FALSE);
+	}
+
+	in[0] = winx;
+	in[1] = winy;
+	in[2] = winz;
+	in[3] = 1.0;
+
+	/* Map x and y from window coordinates */
+	in[0] = (in[0] - viewport[0]) / viewport[2];
+	in[1] = (in[1] - viewport[1]) / viewport[3];
+
+	/* Map to range -1 to 1 */
+	in[0] = in[0] * 2 - 1;
+	in[1] = in[1] * 2 - 1;
+	in[2] = in[2] * 2 - 1;
+
+	__gluMultMatrixVecd(finalMatrix, in, out);
+	if (out[3] == 0.0) {
+		return(GL_FALSE);
+	}
+	out[0] /= out[3];
+	out[1] /= out[3];
+	out[2] /= out[3];
+	*objx = out[0];
+	*objy = out[1];
+	*objz = out[2];
+	return(GL_TRUE);
+}
+
+static void __gluMultMatricesd(const GLfloat a[16], const GLfloat b[16],
+	GLfloat r[16])
+{
+	int i, j;
+
+	for (i = 0; i < 4; i++) {
+		for (j = 0; j < 4; j++) {
+			r[i * 4 + j] =
+				a[i * 4 + 0] * b[0 * 4 + j] +
+				a[i * 4 + 1] * b[1 * 4 + j] +
+				a[i * 4 + 2] * b[2 * 4 + j] +
+				a[i * 4 + 3] * b[3 * 4 + j];
+		}
+	}
+}
+
+static int __gluInvertMatrixd(const GLfloat m[16], GLfloat invOut[16])
+{
+	float inv[16], det;
+	int i;
+
+	inv[0] = m[5] * m[10] * m[15] - m[5] * m[11] * m[14] - m[9] * m[6] * m[15]
+		+ m[9] * m[7] * m[14] + m[13] * m[6] * m[11] - m[13] * m[7] * m[10];
+	inv[4] = -m[4] * m[10] * m[15] + m[4] * m[11] * m[14] + m[8] * m[6] * m[15]
+		- m[8] * m[7] * m[14] - m[12] * m[6] * m[11] + m[12] * m[7] * m[10];
+	inv[8] = m[4] * m[9] * m[15] - m[4] * m[11] * m[13] - m[8] * m[5] * m[15]
+		+ m[8] * m[7] * m[13] + m[12] * m[5] * m[11] - m[12] * m[7] * m[9];
+	inv[12] = -m[4] * m[9] * m[14] + m[4] * m[10] * m[13] + m[8] * m[5] * m[14]
+		- m[8] * m[6] * m[13] - m[12] * m[5] * m[10] + m[12] * m[6] * m[9];
+	inv[1] = -m[1] * m[10] * m[15] + m[1] * m[11] * m[14] + m[9] * m[2] * m[15]
+		- m[9] * m[3] * m[14] - m[13] * m[2] * m[11] + m[13] * m[3] * m[10];
+	inv[5] = m[0] * m[10] * m[15] - m[0] * m[11] * m[14] - m[8] * m[2] * m[15]
+		+ m[8] * m[3] * m[14] + m[12] * m[2] * m[11] - m[12] * m[3] * m[10];
+	inv[9] = -m[0] * m[9] * m[15] + m[0] * m[11] * m[13] + m[8] * m[1] * m[15]
+		- m[8] * m[3] * m[13] - m[12] * m[1] * m[11] + m[12] * m[3] * m[9];
+	inv[13] = m[0] * m[9] * m[14] - m[0] * m[10] * m[13] - m[8] * m[1] * m[14]
+		+ m[8] * m[2] * m[13] + m[12] * m[1] * m[10] - m[12] * m[2] * m[9];
+	inv[2] = m[1] * m[6] * m[15] - m[1] * m[7] * m[14] - m[5] * m[2] * m[15]
+		+ m[5] * m[3] * m[14] + m[13] * m[2] * m[7] - m[13] * m[3] * m[6];
+	inv[6] = -m[0] * m[6] * m[15] + m[0] * m[7] * m[14] + m[4] * m[2] * m[15]
+		- m[4] * m[3] * m[14] - m[12] * m[2] * m[7] + m[12] * m[3] * m[6];
+	inv[10] = m[0] * m[5] * m[15] - m[0] * m[7] * m[13] - m[4] * m[1] * m[15]
+		+ m[4] * m[3] * m[13] + m[12] * m[1] * m[7] - m[12] * m[3] * m[5];
+	inv[14] = -m[0] * m[5] * m[14] + m[0] * m[6] * m[13] + m[4] * m[1] * m[14]
+		- m[4] * m[2] * m[13] - m[12] * m[1] * m[6] + m[12] * m[2] * m[5];
+	inv[3] = -m[1] * m[6] * m[11] + m[1] * m[7] * m[10] + m[5] * m[2] * m[11]
+		- m[5] * m[3] * m[10] - m[9] * m[2] * m[7] + m[9] * m[3] * m[6];
+	inv[7] = m[0] * m[6] * m[11] - m[0] * m[7] * m[10] - m[4] * m[2] * m[11]
+		+ m[4] * m[3] * m[10] + m[8] * m[2] * m[7] - m[8] * m[3] * m[6];
+	inv[11] = -m[0] * m[5] * m[11] + m[0] * m[7] * m[9] + m[4] * m[1] * m[11]
+		- m[4] * m[3] * m[9] - m[8] * m[1] * m[7] + m[8] * m[3] * m[5];
+	inv[15] = m[0] * m[5] * m[10] - m[0] * m[6] * m[9] - m[4] * m[1] * m[10]
+		+ m[4] * m[2] * m[9] + m[8] * m[1] * m[6] - m[8] * m[2] * m[5];
+
+	det = m[0] * inv[0] + m[1] * inv[4] + m[2] * inv[8] + m[3] * inv[12];
+	if (det == 0) {
+		return GL_FALSE;
+	}
+
+	det = 1.0 / det;
+
+	for (i = 0; i < 16; i++)
+		invOut[i] = inv[i] * det;
+
+	return GL_TRUE;
+}
+
+static void __gluMultMatrixVecd(const GLfloat matrix[16], const GLfloat in[4],
+	GLfloat out[4])
+{
+	int i;
+
+	for (i = 0; i < 4; i++) {
+		out[i] =
+			in[0] * matrix[0 * 4 + i] +
+			in[1] * matrix[1 * 4 + i] +
+			in[2] * matrix[2 * 4 + i] +
+			in[3] * matrix[3 * 4 + i];
+	}
+}

@@ -20,6 +20,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // cl_view.c -- player rendering positioning
 
 #include "client.h"
+#include "../game/game.h"
+#include "../game/menu.h"
 
 //=============
 //
@@ -545,8 +547,70 @@ void V_RenderView( float stereo_separation )
 		scr_vrect.y+scr_vrect.height-1);
 
 	SCR_DrawCrosshair ();
+
+	if (ge->RenderQueue != NULL) {
+		DrawStack(ge->RenderQueue);
+	}
 }
 
+void DrawTree(struct MenuRenderItem *Menu) {
+	struct MenuRenderItem **Child;
+	if (Menu == NULL)
+		return;
+
+	DrawItem(Menu);
+	DrawMenuText(Menu);
+	Child = Menu->DirectChildren;
+	while (Child != NULL && *Child != NULL) {
+		DrawTree(*Child);
+		Child++;
+	}
+}
+
+void DrawItem(struct MenuRenderItem *Item) {
+	if (Item->Image == NULL) {
+		return;
+	}
+	re.DrawStretchPic(
+		Item->X,
+		Item->Y,
+		Item->W,
+		Item->H,
+		Item->Image
+	);
+}
+
+void DrawMenuText(struct MenuRenderItem *Item) {
+	if (Item->Body == NULL)
+		return;
+	size_t Length = strlen(Item->Body);
+	for (int i = 0; i < Length; i++) {
+		if (!(Item->Body[i] >= 'a' && Item->Body[i] <= 'z'))
+			continue;
+		char *Path = calloc(strlen("text/a") + 1, sizeof(char));
+		strcpy(Path, "text/");
+		size_t Directory = strlen("text/");
+		Path[Directory] = Item->Body[i];
+		
+		printf("%d\n", Item->X);
+		re.DrawStretchPic(
+			((Item->Parent->X + ((i + 1) * 16)) % Item->Parent->W),
+			Item->Parent->Y + (((Item->Parent->X + (i * 16)) / Item->Parent->W) + 2) * 16,
+			16,
+			16,
+			Path
+		);
+		free(Path);
+	}
+}
+
+void DrawStack(struct MenuRenderQueue *Queue) {
+	struct MenuRenderQueueNode *Cursor = Queue->Bottom;
+	while(Cursor != NULL) {
+		DrawTree(Cursor->Value);
+		Cursor = Cursor->Next;
+	}
+}
 
 /*
 =============

@@ -196,13 +196,14 @@ CL_PredictMovement
 Sets cl.predicted_origin and cl.predicted_angles
 =================
 */
+/***/
 void CL_PredictMovement (void)
 {
 	int			ack, current;
 	int			frame;
 	int			oldframe;
 	usercmd_t	*cmd;
-	pmove_t		pm;
+	pmove_t		pm; // pm for "predict movement" or "player move"?
 	int			i;
 	int			step;
 	int			oldz;

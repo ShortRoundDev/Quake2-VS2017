@@ -19,6 +19,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
 #include "g_local.h"
+#include "libxml/HTMLparser.h"
+#include "menu.h"
 
 #define Function(f) {#f, f}
 
@@ -151,6 +153,16 @@ is loaded.
 */
 void InitGame (void)
 {
+	htmlDocPtr doc;
+	FILE* fp;
+	size_t fileSize;
+	struct _xmlNode *child;
+	char* html;
+	struct MenuRenderItem* Item;
+	struct MenuRenderItem* Node;
+	struct MenuRenderItem* Child;
+	int i;
+
 	gi.dprintf ("==== InitGame ====\n");
 
 	gun_x = gi.cvar ("gun_x", "0", 0);
@@ -219,7 +231,37 @@ void InitGame (void)
 	game.maxclients = maxclients->value;
 	game.clients = gi.TagMalloc (game.maxclients * sizeof(game.clients[0]), TAG_GAME);
 	globals.num_edicts = game.maxclients+1;
+
+	LuaInit();
+
+	//lua_pushnumber(state, 69);
+	//lua_pcall(state, 1, 0, 0);
+
 }
+void stackDump (lua_State *L) {
+      int i;
+	  int t;
+	  i =lua_gettop(L);
+      printf(" ----------------  Stack Dump ----------------\n" );
+      while(  i   ) {
+        t = lua_type(L, i);
+        switch (t) {
+          case LUA_TSTRING:
+            printf("%d:`%s'\n", i, lua_tostring(L, i));
+          break;
+          case LUA_TBOOLEAN:
+            printf("%d: %s\n",i,lua_toboolean(L, i) ? "true" : "false");
+          break;
+          case LUA_TNUMBER:
+            printf("%d: %g\n",  i, lua_tonumber(L, i));
+         break;
+         default: printf("%d: %s\n", i, lua_typename(L, t)); break;
+        }
+       i--;
+      }
+     printf("--------------- Stack Dump Finished ---------------" );
+}
+
 
 //=========================================================
 

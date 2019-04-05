@@ -19,6 +19,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 #include "g_local.h"
 #include "m_player.h"
+#include "m_soldier.h"
 
 void ClientUserinfoChanged (edict_t *ent, char *userinfo);
 
@@ -107,14 +108,65 @@ The normal starting point for a level.
 */
 void SP_info_player_start(edict_t *self)
 {
-	if (!coop->value)
+	self->s.modelindex = gi.modelindex ("models/items/coke/coke.md2");
+	self->think = MovePlayerEnt;
+	self->speed = 99999;
+	self->accel = 99999;
+	self->decel = 99999;
+	gi.linkentity(self);
+	globals.player = self;
+
+	/*if (!coop->value)
 		return;
 	if(Q_stricmp(level.mapname, "security") == 0)
 	{
 		// invoke one of our gross, ugly, disgusting hacks
 		self->think = SP_CreateCoopSpots;
 		self->nextthink = level.time + FRAMETIME;
+	}*/
+}
+
+void MovePlayerEnt(edict_t *player) {
+	static int oneframe = 0;
+	int i = 0;
+	float Xdiff, Ydiff;
+	float angle;
+	gclient_t client;
+	static int frame = 0, min = 146, max = 175;
+
+	if(game.clients != NULL) {
+		client = game.clients[0];
 	}
+
+	frame = (frame++ % (max - min));
+	//player->s.frame = frame + min;
+
+	while(oneframe++ < 30)
+		return;
+
+	//printf("Think\n");
+	for(i = 0; i < 3; i++) {
+		player->s.origin[i] = (float)(client.ps.pmove.origin[i]) * 0.125;
+	}
+
+	Xdiff = player->s.origin[0] - player->s.old_origin[0];
+	Ydiff = player->s.origin[1] - player->s.old_origin[1];
+
+	if(Xdiff == 0 && Ydiff == 0) {
+		if(min == 99) {
+			min = 146; max = 175;
+			frame = 0;
+		}
+		return;
+	} else if(min == 146){
+		min = 99; max = 104;
+		frame = 0;
+	}
+	
+	angle = atan2(Ydiff, Xdiff);
+	angle = (angle / 3.14159) * 180; //pi
+
+	player->s.angles[YAW] = angle;
 }
 
 /*QUAKED info_player_deathmatch (1 0 1) (-16 -16 -24) (16 16 32)
@@ -1569,6 +1621,7 @@ usually be a couple times for each server frame.
 */
 void ClientThink (edict_t *ent, usercmd_t *ucmd)
 {
+	
 	gclient_t	*client;
 	edict_t	*other;
 	int		i, j;

@@ -735,6 +735,7 @@ void SV_RunGameFrame (void)
 	// don't run if paused
 	if (!sv_paused->value || maxclients->value > 1)
 	{
+		//Render EVERYTHING!
 		ge->RunFrame ();
 
 		// never get more than one tic behind
@@ -757,6 +758,7 @@ SV_Frame
 
 ==================
 */
+/**Server frame*/
 void SV_Frame (int msec)
 {
 	time_before_game = time_after_game = 0;

@@ -1,75 +1,262 @@
---------------------Configuration: game - Win32 Release Alpha--------------------
-Begining build with project "G:\quake2\code\game\game.dsp", at root.
-Active configuration is Win32 (ALPHA) Dynamic-Link Library (based on Win32 (ALPHA) Dynamic-Link Library)
-
-Project's tools are:
-			"OLE Type Library Maker" with flags "/nologo /D "NDEBUG" /mktyplib203 /o NUL /win32 "
-			"C/C++ Compiler for Alpha" with flags "/nologo /QA21164 /MT /Gt0 /W3 /GX /Zi /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "C_ONLY" /Fp".\ReleaseAXP/game.pch" /YX /Fo".\ReleaseAXP/" /Fd".\ReleaseAXP/" /FD /c "
-			"Win32 Resource Compiler" with flags "/l 0x409 /d "NDEBUG" "
-			"Browser Database Maker" with flags "/nologo /o"..\ReleaseAXP/game.bsc" "
-			"COFF Linker for Alpha" with flags "kernel32.lib user32.lib gdi32.lib /nologo /base:"0x20000000" /subsystem:windows /dll /incremental:no /pdb:"..\ReleaseAXP/gameaxp.pdb" /debug /machine:ALPHA /def:".\game.def" /out:"..\ReleaseAXP/gameaxp.dll" /implib:"..\ReleaseAXP/gameaxp.lib" "
-			"Custom Build" with flags ""
-			"<Component 0xa>" with flags ""
-
-Creating temp file "C:\TEMP\RSPA6.tmp" with contents </nologo /QA21164 /MT /Gt0 /W3 /GX /Zi /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "C_ONLY" /Fp".\ReleaseAXP/game.pch" /YX /Fo".\ReleaseAXP/" /Fd".\ReleaseAXP/"  /c 
-"G:\quake2\code\game\p_weapon.c"
->
-Creating command line "cl.exe @C:\TEMP\RSPA6.tmp" 
-Creating temp file "C:\TEMP\RSPA7.tmp" with contents <kernel32.lib user32.lib gdi32.lib /nologo /base:"0x20000000" /subsystem:windows /dll /incremental:no /pdb:"..\ReleaseAXP/gameaxp.pdb" /debug /machine:ALPHA /def:".\game.def" /out:"..\ReleaseAXP/gameaxp.dll" /implib:"..\ReleaseAXP/gameaxp.lib" 
-.\ReleaseAXP\g_ai.obj
-.\ReleaseAXP\g_chase.obj
-.\ReleaseAXP\g_cmds.obj
-.\ReleaseAXP\g_combat.obj
-.\ReleaseAXP\g_func.obj
-.\ReleaseAXP\g_items.obj
-.\ReleaseAXP\g_main.obj
-.\ReleaseAXP\g_misc.obj
-.\ReleaseAXP\g_monster.obj
-.\ReleaseAXP\g_phys.obj
-.\ReleaseAXP\g_save.obj
-.\ReleaseAXP\g_spawn.obj
-.\ReleaseAXP\g_svcmds.obj
-.\ReleaseAXP\g_target.obj
-.\ReleaseAXP\g_trigger.obj
-.\ReleaseAXP\g_turret.obj
-.\ReleaseAXP\g_utils.obj
-.\ReleaseAXP\g_weapon.obj
-.\ReleaseAXP\m_actor.obj
-.\ReleaseAXP\m_berserk.obj
-.\ReleaseAXP\m_boss2.obj
-.\ReleaseAXP\m_boss3.obj
-.\ReleaseAXP\m_boss31.obj
-.\ReleaseAXP\m_boss32.obj
-.\ReleaseAXP\m_brain.obj
-.\ReleaseAXP\m_chick.obj
-.\ReleaseAXP\m_flash.obj
-.\ReleaseAXP\m_flipper.obj
-.\ReleaseAXP\m_float.obj
-.\ReleaseAXP\m_flyer.obj
-.\ReleaseAXP\m_gladiator.obj
-.\ReleaseAXP\m_gunner.obj
-.\ReleaseAXP\m_hover.obj
-.\ReleaseAXP\m_infantry.obj
-.\ReleaseAXP\m_insane.obj
-.\ReleaseAXP\m_medic.obj
-.\ReleaseAXP\m_move.obj
-.\ReleaseAXP\m_mutant.obj
-.\ReleaseAXP\m_parasite.obj
-.\ReleaseAXP\m_soldier.obj
-.\ReleaseAXP\m_supertank.obj
-.\ReleaseAXP\m_tank.obj
-.\ReleaseAXP\p_client.obj
-.\ReleaseAXP\p_hud.obj
-.\ReleaseAXP\p_trail.obj
-.\ReleaseAXP\p_view.obj
-.\ReleaseAXP\p_weapon.obj
-.\ReleaseAXP\q_shared.obj>
-Creating command line "link.exe @C:\TEMP\RSPA7.tmp" 
+<html>
+<body>
+<pre>
+<h1>Build Log</h1>
+<h3>
+--------------------Configuration: game - Win32 Debug--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating temporary file "C:\Users\colli\AppData\Local\Temp\RSP7F6F.tmp" with contents
+[
+/nologo /G5 /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "BUILDING_REF_GL" /FR".\debug/" /Fp".\debug/game.pch" /YX /Fo".\debug/" /Fd".\debug/" /FD /c 
+"C:\Users\colli\Projects\Code\cpp\Quake-2\game\g_ai.c"
+"C:\Users\colli\Projects\Code\cpp\Quake-2\game\g_chase.c"
+"C:\Users\colli\Projects\Code\cpp\Quake-2\game\g_cmds.c"
+"C:\Users\colli\Projects\Code\cpp\Quake-2\game\g_combat.c"
+"C:\Users\colli\Projects\Code\cpp\Quake-2\game\g_func.c"
+"C:\Users\colli\Projects\Code\cpp\Quake-2\game\g_items.c"
+"C:\Users\colli\Projects\Code\cpp\Quake-2\game\g_main.c"
+"C:\Users\colli\Projects\Code\cpp\Quake-2\game\g_misc.c"
+"C:\Users\colli\Projects\Code\cpp\Quake-2\game\g_monster.c"
+"C:\Users\colli\Projects\Code\cpp\Quake-2\game\g_phys.c"
+"C:\Users\colli\Projects\Code\cpp\Quake-2\game\g_save.c"
+"C:\Users\colli\Projects\Code\cpp\Quake-2\game\g_spawn.c"
+"C:\Users\colli\Projects\Code\cpp\Quake-2\game\g_svcmds.c"
+"C:\Users\colli\Projects\Code\cpp\Quake-2\game\g_target.c"
+"C:\Users\colli\Projects\Code\cpp\Quake-2\game\g_trigger.c"
+"C:\Users\colli\Projects\Code\cpp\Quake-2\game\g_turret.c"
+"C:\Users\colli\Projects\Code\cpp\Quake-2\game\g_utils.c"
+"C:\Users\colli\Projects\Code\cpp\Quake-2\game\g_weapon.c"
+"C:\Users\colli\Projects\Code\cpp\Quake-2\game\lua.c"
+"C:\Users\colli\Projects\Code\cpp\Quake-2\game\m_actor.c"
+"C:\Users\colli\Projects\Code\cpp\Quake-2\game\m_berserk.c"
+"C:\Users\colli\Projects\Code\cpp\Quake-2\game\m_boss2.c"
+"C:\Users\colli\Projects\Code\cpp\Quake-2\game\m_boss3.c"
+"C:\Users\colli\Projects\Code\cpp\Quake-2\game\m_boss31.c"
+"C:\Users\colli\Projects\Code\cpp\Quake-2\game\m_boss32.c"
+"C:\Users\colli\Projects\Code\cpp\Quake-2\game\m_brain.c"
+"C:\Users\colli\Projects\Code\cpp\Quake-2\game\m_chick.c"
+"C:\Users\colli\Projects\Code\cpp\Quake-2\game\m_flash.c"
+"C:\Users\colli\Projects\Code\cpp\Quake-2\game\m_flipper.c"
+"C:\Users\colli\Projects\Code\cpp\Quake-2\game\m_float.c"
+"C:\Users\colli\Projects\Code\cpp\Quake-2\game\m_flyer.c"
+"C:\Users\colli\Projects\Code\cpp\Quake-2\game\m_gladiator.c"
+"C:\Users\colli\Projects\Code\cpp\Quake-2\game\m_gunner.c"
+"C:\Users\colli\Projects\Code\cpp\Quake-2\game\m_hover.c"
+"C:\Users\colli\Projects\Code\cpp\Quake-2\game\m_infantry.c"
+"C:\Users\colli\Projects\Code\cpp\Quake-2\game\m_insane.c"
+"C:\Users\colli\Projects\Code\cpp\Quake-2\game\m_medic.c"
+"C:\Users\colli\Projects\Code\cpp\Quake-2\game\m_move.c"
+"C:\Users\colli\Projects\Code\cpp\Quake-2\game\m_mutant.c"
+"C:\Users\colli\Projects\Code\cpp\Quake-2\game\m_parasite.c"
+"C:\Users\colli\Projects\Code\cpp\Quake-2\game\m_soldier.c"
+"C:\Users\colli\Projects\Code\cpp\Quake-2\game\m_supertank.c"
+"C:\Users\colli\Projects\Code\cpp\Quake-2\game\m_tank.c"
+"C:\Users\colli\Projects\Code\cpp\Quake-2\game\menu.c"
+"C:\Users\colli\Projects\Code\cpp\Quake-2\game\p_client.c"
+"C:\Users\colli\Projects\Code\cpp\Quake-2\game\p_hud.c"
+"C:\Users\colli\Projects\Code\cpp\Quake-2\game\p_trail.c"
+"C:\Users\colli\Projects\Code\cpp\Quake-2\game\p_view.c"
+"C:\Users\colli\Projects\Code\cpp\Quake-2\game\p_weapon.c"
+"C:\Users\colli\Projects\Code\cpp\Quake-2\game\q_shared.c"
+]
+Creating command line "cl.exe @C:\Users\colli\AppData\Local\Temp\RSP7F6F.tmp" 
+Creating temporary file "C:\Users\colli\AppData\Local\Temp\RSP7F70.tmp" with contents
+[
+kernel32.lib user32.lib winmm.lib lua53.lib libxml1.lib lua53.lib /nologo /base:"0x20000000" /subsystem:windows /dll /incremental:no /pdb:"..\debug/gamex86.pdb" /map:".\debug/gamex86.map" /debug /machine:I386 /def:".\game.def" /out:"..\debug\gamex86.dll" /implib:"..\debug/gamex86.lib" 
+".\debug\g_ai.obj"
+".\debug\g_chase.obj"
+".\debug\g_cmds.obj"
+".\debug\g_combat.obj"
+".\debug\g_func.obj"
+".\debug\g_items.obj"
+".\debug\g_main.obj"
+".\debug\g_misc.obj"
+".\debug\g_monster.obj"
+".\debug\g_phys.obj"
+".\debug\g_save.obj"
+".\debug\g_spawn.obj"
+".\debug\g_svcmds.obj"
+".\debug\g_target.obj"
+".\debug\g_trigger.obj"
+".\debug\g_turret.obj"
+".\debug\g_utils.obj"
+".\debug\g_weapon.obj"
+".\debug\lua.obj"
+".\debug\m_actor.obj"
+".\debug\m_berserk.obj"
+".\debug\m_boss2.obj"
+".\debug\m_boss3.obj"
+".\debug\m_boss31.obj"
+".\debug\m_boss32.obj"
+".\debug\m_brain.obj"
+".\debug\m_chick.obj"
+".\debug\m_flash.obj"
+".\debug\m_flipper.obj"
+".\debug\m_float.obj"
+".\debug\m_flyer.obj"
+".\debug\m_gladiator.obj"
+".\debug\m_gunner.obj"
+".\debug\m_hover.obj"
+".\debug\m_infantry.obj"
+".\debug\m_insane.obj"
+".\debug\m_medic.obj"
+".\debug\m_move.obj"
+".\debug\m_mutant.obj"
+".\debug\m_parasite.obj"
+".\debug\m_soldier.obj"
+".\debug\m_supertank.obj"
+".\debug\m_tank.obj"
+".\debug\menu.obj"
+".\debug\p_client.obj"
+".\debug\p_hud.obj"
+".\debug\p_trail.obj"
+".\debug\p_view.obj"
+".\debug\p_weapon.obj"
+".\debug\q_shared.obj"
+]
+Creating command line "link.exe @C:\Users\colli\AppData\Local\Temp\RSP7F70.tmp"
+<h3>Output Window</h3>
 Compiling...
+g_ai.c
+g_chase.c
+g_cmds.c
+C:\Users\colli\Projects\Code\cpp\Quake-2\game\g_cmds.c(823) : warning C4101: 'dz' : unreferenced local variable
+C:\Users\colli\Projects\Code\cpp\Quake-2\game\g_cmds.c(822) : warning C4101: 'distance' : unreferenced local variable
+C:\Users\colli\Projects\Code\cpp\Quake-2\game\g_cmds.c(823) : warning C4101: 'dx' : unreferenced local variable
+C:\Users\colli\Projects\Code\cpp\Quake-2\game\g_cmds.c(823) : warning C4101: 'dy' : unreferenced local variable
+g_combat.c
+g_func.c
+g_items.c
+g_main.c
+g_misc.c
+g_monster.c
+g_phys.c
+g_save.c
+C:\Users\colli\Projects\Code\cpp\Quake-2\game\g_save.c(163) : warning C4101: 'Child' : unreferenced local variable
+C:\Users\colli\Projects\Code\cpp\Quake-2\game\g_save.c(161) : warning C4101: 'Item' : unreferenced local variable
+C:\Users\colli\Projects\Code\cpp\Quake-2\game\g_save.c(160) : warning C4101: 'html' : unreferenced local variable
+C:\Users\colli\Projects\Code\cpp\Quake-2\game\g_save.c(156) : warning C4101: 'doc' : unreferenced local variable
+C:\Users\colli\Projects\Code\cpp\Quake-2\game\g_save.c(164) : warning C4101: 'i' : unreferenced local variable
+C:\Users\colli\Projects\Code\cpp\Quake-2\game\g_save.c(159) : warning C4101: 'child' : unreferenced local variable
+C:\Users\colli\Projects\Code\cpp\Quake-2\game\g_save.c(158) : warning C4101: 'fileSize' : unreferenced local variable
+C:\Users\colli\Projects\Code\cpp\Quake-2\game\g_save.c(157) : warning C4101: 'fp' : unreferenced local variable
+C:\Users\colli\Projects\Code\cpp\Quake-2\game\g_save.c(162) : warning C4101: 'Node' : unreferenced local variable
+g_spawn.c
+g_svcmds.c
+g_target.c
+g_trigger.c
+g_turret.c
+g_utils.c
+g_weapon.c
+lua.c
+m_actor.c
+c:\users\colli\projects\code\cpp\quake-2\game\lua.c(82) : warning C4716: 'Reg_CloseMenu' : must return a value
+m_berserk.c
+m_boss2.c
+m_boss3.c
+m_boss31.c
+m_boss32.c
+m_brain.c
+m_chick.c
+m_flash.c
+m_flipper.c
+m_float.c
+m_flyer.c
+m_gladiator.c
+m_gunner.c
+m_hover.c
+m_infantry.c
+m_insane.c
+m_medic.c
+m_move.c
+m_mutant.c
+m_parasite.c
+m_soldier.c
+m_supertank.c
+m_tank.c
+menu.c
+c:\users\colli\projects\code\cpp\quake-2\game\menu.c(101) : warning C4020: 'PushFromXmlNode' : too many actual parameters
+c:\users\colli\projects\code\cpp\quake-2\game\menu.c(107) : warning C4029: declared formal parameter list different from definition
+c:\users\colli\projects\code\cpp\quake-2\game\menu.c(116) : warning C4133: '=' : incompatible types - from 'struct MenuRenderItem *' to 'struct MenurenderItem *'
+c:\users\colli\projects\code\cpp\quake-2\game\menu.c(191) : warning C4020: 'PushFromXmlNode' : too many actual parameters
+c:\users\colli\projects\code\cpp\quake-2\game\menu.c(246) : warning C4133: 'function' : incompatible types - from 'struct MenuRenderQueueNode *' to 'struct NenuRenderQueueNode *'
+c:\users\colli\projects\code\cpp\quake-2\game\menu.c(257) : warning C4028: formal parameter 1 different from declaration
+c:\users\colli\projects\code\cpp\quake-2\game\menu.c(296) : warning C4133: 'initializing' : incompatible types - from 'struct MenuRenderQueueNode *' to 'struct MenuRenderNode *'
+c:\users\colli\projects\code\cpp\quake-2\game\menu.c(299) : warning C4133: '=' : incompatible types - from 'struct MenuRenderQueueNode *' to 'struct MenuRenderNode *'
+p_client.c
+c:\users\colli\projects\code\cpp\quake-2\game\menu.c(90) : warning C4715: 'MenuFindTop' : not all control paths return a value
+c:\users\colli\projects\code\cpp\quake-2\game\m_soldier.h(74) : warning C4005: 'FRAME_pain101' : macro redefinition
+        c:\users\colli\projects\code\cpp\quake-2\game\m_player.h(78) : see previous definition of 'FRAME_pain101'
+c:\users\colli\projects\code\cpp\quake-2\game\m_soldier.h(75) : warning C4005: 'FRAME_pain102' : macro redefinition
+        c:\users\colli\projects\code\cpp\quake-2\game\m_player.h(79) : see previous definition of 'FRAME_pain102'
+c:\users\colli\projects\code\cpp\quake-2\game\m_soldier.h(76) : warning C4005: 'FRAME_pain103' : macro redefinition
+        c:\users\colli\projects\code\cpp\quake-2\game\m_player.h(80) : see previous definition of 'FRAME_pain103'
+c:\users\colli\projects\code\cpp\quake-2\game\m_soldier.h(77) : warning C4005: 'FRAME_pain104' : macro redefinition
+        c:\users\colli\projects\code\cpp\quake-2\game\m_player.h(81) : see previous definition of 'FRAME_pain104'
+c:\users\colli\projects\code\cpp\quake-2\game\m_soldier.h(79) : warning C4005: 'FRAME_pain201' : macro redefinition
+        c:\users\colli\projects\code\cpp\quake-2\game\m_player.h(82) : see previous definition of 'FRAME_pain201'
+c:\users\colli\projects\code\cpp\quake-2\game\m_soldier.h(80) : warning C4005: 'FRAME_pain202' : macro redefinition
+        c:\users\colli\projects\code\cpp\quake-2\game\m_player.h(83) : see previous definition of 'FRAME_pain202'
+c:\users\colli\projects\code\cpp\quake-2\game\m_soldier.h(81) : warning C4005: 'FRAME_pain203' : macro redefinition
+        c:\users\colli\projects\code\cpp\quake-2\game\m_player.h(84) : see previous definition of 'FRAME_pain203'
+c:\users\colli\projects\code\cpp\quake-2\game\m_soldier.h(82) : warning C4005: 'FRAME_pain204' : macro redefinition
+        c:\users\colli\projects\code\cpp\quake-2\game\m_player.h(85) : see previous definition of 'FRAME_pain204'
+c:\users\colli\projects\code\cpp\quake-2\game\m_soldier.h(296) : warning C4005: 'FRAME_death101' : macro redefinition
+        c:\users\colli\projects\code\cpp\quake-2\game\m_player.h(202) : see previous definition of 'FRAME_death101'
+c:\users\colli\projects\code\cpp\quake-2\game\m_soldier.h(297) : warning C4005: 'FRAME_death102' : macro redefinition
+        c:\users\colli\projects\code\cpp\quake-2\game\m_player.h(203) : see previous definition of 'FRAME_death102'
+c:\users\colli\projects\code\cpp\quake-2\game\m_soldier.h(298) : warning C4005: 'FRAME_death103' : macro redefinition
+        c:\users\colli\projects\code\cpp\quake-2\game\m_player.h(204) : see previous definition of 'FRAME_death103'
+c:\users\colli\projects\code\cpp\quake-2\game\m_soldier.h(299) : warning C4005: 'FRAME_death104' : macro redefinition
+        c:\users\colli\projects\code\cpp\quake-2\game\m_player.h(205) : see previous definition of 'FRAME_death104'
+c:\users\colli\projects\code\cpp\quake-2\game\m_soldier.h(300) : warning C4005: 'FRAME_death105' : macro redefinition
+        c:\users\colli\projects\code\cpp\quake-2\game\m_player.h(206) : see previous definition of 'FRAME_death105'
+c:\users\colli\projects\code\cpp\quake-2\game\m_soldier.h(301) : warning C4005: 'FRAME_death106' : macro redefinition
+        c:\users\colli\projects\code\cpp\quake-2\game\m_player.h(207) : see previous definition of 'FRAME_death106'
+c:\users\colli\projects\code\cpp\quake-2\game\m_soldier.h(332) : warning C4005: 'FRAME_death201' : macro redefinition
+        c:\users\colli\projects\code\cpp\quake-2\game\m_player.h(208) : see previous definition of 'FRAME_death201'
+c:\users\colli\projects\code\cpp\quake-2\game\m_soldier.h(333) : warning C4005: 'FRAME_death202' : macro redefinition
+        c:\users\colli\projects\code\cpp\quake-2\game\m_player.h(209) : see previous definition of 'FRAME_death202'
+c:\users\colli\projects\code\cpp\quake-2\game\m_soldier.h(334) : warning C4005: 'FRAME_death203' : macro redefinition
+        c:\users\colli\projects\code\cpp\quake-2\game\m_player.h(210) : see previous definition of 'FRAME_death203'
+c:\users\colli\projects\code\cpp\quake-2\game\m_soldier.h(335) : warning C4005: 'FRAME_death204' : macro redefinition
+        c:\users\colli\projects\code\cpp\quake-2\game\m_player.h(211) : see previous definition of 'FRAME_death204'
+c:\users\colli\projects\code\cpp\quake-2\game\m_soldier.h(336) : warning C4005: 'FRAME_death205' : macro redefinition
+        c:\users\colli\projects\code\cpp\quake-2\game\m_player.h(212) : see previous definition of 'FRAME_death205'
+c:\users\colli\projects\code\cpp\quake-2\game\m_soldier.h(337) : warning C4005: 'FRAME_death206' : macro redefinition
+        c:\users\colli\projects\code\cpp\quake-2\game\m_player.h(213) : see previous definition of 'FRAME_death206'
+c:\users\colli\projects\code\cpp\quake-2\game\m_soldier.h(367) : warning C4005: 'FRAME_death301' : macro redefinition
+        c:\users\colli\projects\code\cpp\quake-2\game\m_player.h(214) : see previous definition of 'FRAME_death301'
+c:\users\colli\projects\code\cpp\quake-2\game\m_soldier.h(368) : warning C4005: 'FRAME_death302' : macro redefinition
+        c:\users\colli\projects\code\cpp\quake-2\game\m_player.h(215) : see previous definition of 'FRAME_death302'
+c:\users\colli\projects\code\cpp\quake-2\game\m_soldier.h(369) : warning C4005: 'FRAME_death303' : macro redefinition
+        c:\users\colli\projects\code\cpp\quake-2\game\m_player.h(216) : see previous definition of 'FRAME_death303'
+c:\users\colli\projects\code\cpp\quake-2\game\m_soldier.h(370) : warning C4005: 'FRAME_death304' : macro redefinition
+        c:\users\colli\projects\code\cpp\quake-2\game\m_player.h(217) : see previous definition of 'FRAME_death304'
+c:\users\colli\projects\code\cpp\quake-2\game\m_soldier.h(371) : warning C4005: 'FRAME_death305' : macro redefinition
+        c:\users\colli\projects\code\cpp\quake-2\game\m_player.h(218) : see previous definition of 'FRAME_death305'
+c:\users\colli\projects\code\cpp\quake-2\game\m_soldier.h(372) : warning C4005: 'FRAME_death306' : macro redefinition
+        c:\users\colli\projects\code\cpp\quake-2\game\m_player.h(219) : see previous definition of 'FRAME_death306'
+c:\users\colli\projects\code\cpp\quake-2\game\m_soldier.h(373) : warning C4005: 'FRAME_death307' : macro redefinition
+        c:\users\colli\projects\code\cpp\quake-2\game\m_player.h(220) : see previous definition of 'FRAME_death307'
+c:\users\colli\projects\code\cpp\quake-2\game\m_soldier.h(374) : warning C4005: 'FRAME_death308' : macro redefinition
+        c:\users\colli\projects\code\cpp\quake-2\game\m_player.h(221) : see previous definition of 'FRAME_death308'
+c:\users\colli\projects\code\cpp\quake-2\game\m_soldier.h(500) : warning C4005: 'MODEL_SCALE' : macro redefinition
+        c:\users\colli\projects\code\cpp\quake-2\game\m_player.h(223) : see previous definition of 'MODEL_SCALE'
+p_hud.c
+p_trail.c
+p_view.c
 p_weapon.c
+q_shared.c
 Linking...
-   Creating library ..\ReleaseAXP/gameaxp.lib and object ..\ReleaseAXP/gameaxp.exp
+LINK : warning LNK4075: ignoring /EDITANDCONTINUE due to /INCREMENTAL:NO specification
+   Creating library ..\debug/gamex86.lib and object ..\debug/gamex86.exp
 
 
 
-gameaxp.dll - 0 error(s), 0 warning(s)
+<h3>Results</h3>
+gamex86.dll - 0 error(s), 53 warning(s)
+</pre>
+</body>
+</html>

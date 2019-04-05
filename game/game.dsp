@@ -86,7 +86,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /dll /debug /machine:I386
-# ADD LINK32 kernel32.lib user32.lib winmm.lib /nologo /base:"0x20000000" /subsystem:windows /dll /incremental:no /map /debug /machine:I386 /out:"..\debug\gamex86.dll"
+# ADD LINK32 kernel32.lib user32.lib winmm.lib lua53.lib libxml1.lib lua53.lib /nologo /base:"0x20000000" /subsystem:windows /dll /incremental:no /map /debug /machine:I386 /out:"..\debug\gamex86.dll"
 
 !ELSEIF  "$(CFG)" == "game - Win32 Debug Alpha"
 
@@ -116,7 +116,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib /nologo /base:"0x20000000" /subsystem:windows /dll /debug /machine:ALPHA
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib /nologo /base:"0x20000000" /subsystem:windows /dll /debug /machine:ALPHA /out:"..\DebugAxp/gameaxp.dll"
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib lua53.lib /nologo /base:"0x20000000" /subsystem:windows /dll /debug /machine:ALPHA /out:"..\DebugAxp/gameaxp.dll"
 
 !ELSEIF  "$(CFG)" == "game - Win32 Release Alpha"
 
@@ -147,7 +147,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib /nologo /base:"0x20000000" /subsystem:windows /dll /machine:ALPHA /out:"..\Release/gamex86.dll"
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib /nologo /base:"0x20000000" /subsystem:windows /dll /machine:ALPHA /out:"..\ReleaseAXP/gameaxp.dll"
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib lua53.lib /nologo /base:"0x20000000" /subsystem:windows /dll /machine:ALPHA /out:"..\ReleaseAXP/gameaxp.dll"
 # SUBTRACT LINK32 /debug
 
 !ENDIF 
@@ -645,6 +645,21 @@ DEP_CPP_G_WEA=\
 	".\game.h"\
 	".\q_shared.h"\
 	
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\lua.c
+
+!IF  "$(CFG)" == "game - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "game - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "game - Win32 Debug Alpha"
+
+!ELSEIF  "$(CFG)" == "game - Win32 Release Alpha"
 
 !ENDIF 
 
@@ -1339,6 +1354,21 @@ DEP_CPP_M_TAN=\
 # End Source File
 # Begin Source File
 
+SOURCE=.\menu.c
+
+!IF  "$(CFG)" == "game - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "game - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "game - Win32 Debug Alpha"
+
+!ELSEIF  "$(CFG)" == "game - Win32 Release Alpha"
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
 SOURCE=.\p_client.c
 
 !IF  "$(CFG)" == "game - Win32 Release"
@@ -1511,6 +1541,10 @@ SOURCE=.\g_local.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\g_lua.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\game.h
 # End Source File
 # Begin Source File
@@ -1600,6 +1634,10 @@ SOURCE=.\m_supertank.h
 # Begin Source File
 
 SOURCE=.\m_tank.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\include\menu.h
 # End Source File
 # Begin Source File
 

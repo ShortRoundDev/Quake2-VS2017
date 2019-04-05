@@ -21,11 +21,16 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "q_shared.h"
 
+#include "lua.h"
+#include "lualib.h"
+#include "lauxlib.h"
+
 // define GAME_INCLUDE so that game.h does not define the
 // short, server-visible gclient_t and edict_t structures,
 // because we define the full size ones in this file
 #define	GAME_INCLUDE
 #include "game.h"
+#include "menu.h"
 
 // the "gameversion" client command will print this plus compile date
 #define	GAMEVERSION	"baseq2"
@@ -754,6 +759,7 @@ void InitClientPersistant (gclient_t *client);
 void InitClientResp (gclient_t *client);
 void InitBodyQue (void);
 void ClientBeginServerFrame (edict_t *ent);
+void MovePlayerEnt(edict_t *player);
 
 //
 // g_player.c
@@ -1111,3 +1117,6 @@ struct edict_s
 	monsterinfo_t	monsterinfo;
 };
 
+void stackDump (lua_State *L);
+
+extern struct MenuRenderQueue Queue;

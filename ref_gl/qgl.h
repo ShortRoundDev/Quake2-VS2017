@@ -276,6 +276,7 @@ extern  void ( APIENTRY * qglRasterPos4sv )(const GLshort *v);
 extern  void ( APIENTRY * qglReadBuffer )(GLenum mode);
 extern  void ( APIENTRY * qglReadPixels )(GLint x, GLint y, GLsizei width, GLsizei height, GLenum format, GLenum type, GLvoid *pixels);
 extern  void ( APIENTRY * qglRectd )(GLdouble x1, GLdouble y1, GLdouble x2, GLdouble y2);
+extern  void ( APIENTRY * qgluUnProject)(GLdouble winX, GLdouble winY, GLdouble winZ, const GLdouble * model, const GLdouble * proj, const GLint * view, GLdouble* objX, GLdouble* objY, GLdouble* objZ);
 extern  void ( APIENTRY * qglRectdv )(const GLdouble *v1, const GLdouble *v2);
 extern  void ( APIENTRY * qglRectf )(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2);
 extern  void ( APIENTRY * qglRectfv )(const GLfloat *v1, const GLfloat *v2);
