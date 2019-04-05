@@ -309,7 +309,10 @@ void ED_CallSpawn (edict_t *ent)
 			return;
 		}
 	}
-	gi.dprintf ("%s doesn't have a spawn function\n", ent->classname);
+
+	if (!sp_LuaSpawn(ent)) {
+		gi.dprintf("%s doesn't have a spawn function\n", ent->classname);
+	}
 }
 
 /*

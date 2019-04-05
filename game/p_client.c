@@ -109,6 +109,12 @@ The normal starting point for a level.
 void SP_info_player_start(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex ("models/items/coke/coke.md2");
+	if (self->entId != NULL) {
+		printf("%s\n", self->entId);
+	}
+	else {
+		printf("NO ENT ID ON SPAWN!\n");
+	}
 	self->think = MovePlayerEnt;
 	self->speed = 99999;
 	self->accel = 99999;

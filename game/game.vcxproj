@@ -95,7 +95,7 @@
     <OutDir>.\..\debug\</OutDir>
     <IntDir>.\debug\</IntDir>
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>C:\Users\colli\Projects\Code\cpp\Modern - Copy\Quake-2\game\include;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Users\colli\Projects\Code\cpp\Modern - Copy\Quake2-VS2017\game\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug Alpha|Win32'">
     <ClCompile>

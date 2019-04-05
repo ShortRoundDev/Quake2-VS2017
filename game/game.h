@@ -1,3 +1,5 @@
+#pragma once
+#include "../game/menu.h"
 /*
 Copyright (C) 1997-2001 Id Software, Inc.
 
@@ -204,7 +206,7 @@ typedef struct
 //
 // functions exported by the game subsystem
 //
-typedef struct
+typedef struct game_export_s
 {
 	int			apiversion;
 

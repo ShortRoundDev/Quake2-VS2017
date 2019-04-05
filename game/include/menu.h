@@ -1,5 +1,4 @@
-#ifndef __menu_h
-#define __menu_h
+#if 0
 
 struct MenuRenderItem {
 	char *Name;
@@ -44,10 +43,15 @@ void CloseMenu(struct NenuRenderQueueNode *Node);
 void CloseMenuItem(struct MenuRenderItem *Item);
 void CloseAllMenus(struct MenuRenderQueue *Queue);
 
+void DrawItem(struct MenuRenderItem *Item);
+void DrawStack(struct MenuRenderQueue *Queue);
+void DrawMenuText(struct MenuRenderItem *Item);
+
 struct MenuRenderItem* FindItemXY(struct MenuRenderItem* Item, long X, long Y);
 struct MenuRenderItem* FindItemFromAllXY(struct MenuRenderQueue* Queue, long X, long Y);
 void DispatchEvent(char* Id, char* Event);
 
 //Tree Operations
 void OnLoad(struct MenuRenderItem* Item);
+
 #endif

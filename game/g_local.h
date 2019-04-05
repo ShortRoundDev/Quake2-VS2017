@@ -1,3 +1,4 @@
+#pragma once
 /*
 Copyright (C) 1997-2001 Id Software, Inc.
 
@@ -996,11 +997,12 @@ struct edict_s
 	int			clipmask;
 	edict_t		*owner;
 
-
 	// DO NOT MODIFY ANYTHING ABOVE THIS, THE SERVER
 	// EXPECTS THE FIELDS IN THAT ORDER!
 
 	//================================
+	char*		entId;
+
 	int			movetype;
 	int			flags;
 
