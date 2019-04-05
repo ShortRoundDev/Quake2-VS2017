@@ -75,6 +75,7 @@ byte		defer_text_buf[8192];
 Cbuf_Init
 ============
 */
+/**Initializes the command text buffer for the console*/
 void Cbuf_Init (void)
 {
 	SZ_Init (&cmd_text, cmd_text_buf, sizeof(cmd_text_buf));
@@ -191,6 +192,8 @@ void Cbuf_ExecuteText (int exec_when, char *text)
 Cbuf_Execute
 ============
 */
+
+/**Executes all commands in the Command Buffer*/
 void Cbuf_Execute (void)
 {
 	int		i;
@@ -260,6 +263,8 @@ the client and server initialize for the first time.
 Other commands are added late, after all initialization is complete.
 ===============
 */
+/**Adds +set commands from global `argv` to Command Buffer, clears the argument list if specified
+  *\param[in] clear Clears the command argument list if true*/
 void Cbuf_AddEarlyCommands (qboolean clear)
 {
 	int		i;
@@ -808,6 +813,8 @@ A complete command line has been parsed, so try to execute it
 FIXME: lookupnoadd the token to speed search?
 ============
 */
+/**Executes the provided command string
+  *\param[in] text The command string*/
 void	Cmd_ExecuteString (char *text)
 {	
 	cmd_function_t	*cmd;
@@ -878,6 +885,7 @@ void Cmd_List_f (void)
 Cmd_Init
 ============
 */
+/**Initializes basic commands in Quake 2 Console language*/
 void Cmd_Init (void)
 {
 //

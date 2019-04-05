@@ -18,10 +18,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 // sv_game.c -- interface to the game dll
+#include "windows.h"
 
 #include "server.h"
+#include "../client/ref.h"
 
 game_export_t	*ge;
+extern refexport_t re;
 
 
 /*
@@ -311,6 +314,24 @@ void SV_ShutdownGameProgs (void)
 	ge = NULL;
 }
 
+void SV_GetCursorPos(long *x, long *y)
+{
+	POINT P;
+	GetCursorPos(&P);
+	HWND Window = GetActiveWindow();
+	if (Window) {
+		ScreenToClient(Window, &P);
+	}
+
+	*x = P.x;
+	*y = P.y;
+}
+
+void ProjectCursor(long x, long y, float *vector) {
+	re.Unproject(x, y, vector);
+}
+
+
 /*
 ===============
 SV_InitGameProgs
@@ -382,6 +403,9 @@ void SV_InitGameProgs (void)
 	import.DebugGraph = SCR_DebugGraph;
 	import.SetAreaPortalState = CM_SetAreaPortalState;
 	import.AreasConnected = CM_AreasConnected;
+
+	import.GetCursorPos = SV_GetCursorPos;
+	import.ProjectCursor = ProjectCursor;
 
 	ge = (game_export_t *)Sys_GetGameAPI (&import);
 

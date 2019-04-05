@@ -405,6 +405,7 @@ void SCR_Sky_f (void)
 SCR_Init
 ==================
 */
+/**Initialize screen variables and commands*/
 void SCR_Init (void)
 {
 	scr_viewsize = Cvar_Get ("viewsize", "100", CVAR_ARCHIVE);

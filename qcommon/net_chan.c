@@ -88,6 +88,7 @@ Netchan_Init
 
 ===============
 */
+/**Sets a random port and assigns the qport global variable to that*/
 void Netchan_Init (void)
 {
 	int		port;

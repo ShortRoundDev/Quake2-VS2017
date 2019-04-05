@@ -101,10 +101,23 @@ image_t	*Draw_FindPic (char *name)
 	{
 		Com_sprintf (fullname, sizeof(fullname), "pics/%s.pcx", name);
 		gl = GL_FindImage (fullname, it_pic);
+		if (gl == NULL) {
+			Com_sprintf(fullname, sizeof(fullname), "pics/%s.tga", name);
+			gl = GL_FindImage(fullname, it_pic);
+			if (gl == NULL) {
+				printf("Couldn't open tga file either!");
+			}
+		}
 	}
-	else
-		gl = GL_FindImage (name+1, it_pic);
-
+	else {
+		gl = GL_FindImage(name + 1, it_pic);
+		if (gl == NULL) {
+			gl = GL_FindImage(name + 1, it_pic);
+			if (gl == NULL) {
+				printf("Couldn't open tga file either!");
+			}
+		}
+	}
 	return gl;
 }
 

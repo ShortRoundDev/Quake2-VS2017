@@ -50,6 +50,7 @@
     <ClCompile Include="qcommon\md4.c" />
     <ClCompile Include="qcommon\net_chan.c" />
     <ClCompile Include="qcommon\pmove.c" />
+    <ClCompile Include="RenderMenu.c" />
     <ClCompile Include="server\sv_ccmds.c" />
     <ClCompile Include="server\sv_ents.c" />
     <ClCompile Include="server\sv_game.c" />
@@ -131,9 +132,11 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>C:\Users\colli\Projects\Code\cpp\Modern - Copy\Quake2-VS2017\game\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>C:\Users\colli\Projects\Code\cpp\Modern - Copy\Quake2-VS2017\game\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>

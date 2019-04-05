@@ -554,6 +554,7 @@ void VID_FreeReflib (void)
 VID_LoadRefresh
 ==============
 */
+/**Exchange APIs, reset video loading*/
 qboolean VID_LoadRefresh( char *name )
 {
 	refimport_t	ri;
@@ -637,10 +638,12 @@ is to check to see if any of the video mode parameters have changed, and if they
 update the rendering DLL and/or video mode to match.
 ============
 */
+/**Check whether or not the video parameters have changed, then reload if so*/
 void VID_CheckChanges (void)
 {
 	char name[100];
 
+	//Allow or disallow alt-tab
 	if ( win_noalttab->modified )
 	{
 		if ( win_noalttab->value )
@@ -669,6 +672,7 @@ void VID_CheckChanges (void)
 		cl.refresh_prepped = false;
 		cls.disable_screen = true;
 
+		//Load OpenGL, or software if not available
 		Com_sprintf( name, sizeof(name), "ref_%s.dll", vid_ref->string );
 		if ( !VID_LoadRefresh( name ) )
 		{
@@ -705,6 +709,7 @@ void VID_CheckChanges (void)
 VID_Init
 ============
 */
+/**Initialize video*/
 void VID_Init (void)
 {
 	/* Create the video variables so we know how to start the graphics drivers */

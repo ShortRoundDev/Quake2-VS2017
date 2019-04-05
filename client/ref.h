@@ -181,6 +181,8 @@ typedef struct
 
 	void	(*AppActivate)( qboolean activate );
 
+	void	(*Unproject)(long x, long y, float *vector);
+
 } refexport_t;
 
 //

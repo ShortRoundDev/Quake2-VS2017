@@ -19,6 +19,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
 #include "g_local.h"
+#include "g_lua.h"
 
 typedef struct
 {
@@ -308,7 +309,10 @@ void ED_CallSpawn (edict_t *ent)
 			return;
 		}
 	}
-	gi.dprintf ("%s doesn't have a spawn function\n", ent->classname);
+
+	if (!sp_LuaSpawn(ent)) {
+		gi.dprintf("%s doesn't have a spawn function\n", ent->classname);
+	}
 }
 
 /*

@@ -404,6 +404,7 @@ void IN_CenterView (void)
 CL_InitInput
 ============
 */
+/**Adds commands related to device input. Moving, looking, using, shooting, etc.*/
 void CL_InitInput (void)
 {
 	Cmd_AddCommand ("centerview",IN_CenterView);

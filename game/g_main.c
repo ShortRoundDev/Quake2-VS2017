@@ -133,6 +133,9 @@ game_export_t *GetGameAPI (game_import_t *import)
 	globals.ServerCommand = ServerCommand;
 
 	globals.edict_size = sizeof(edict_t);
+	
+	Queue.Top = NULL;
+	globals.RenderQueue = &Queue;
 
 	return &globals;
 }
@@ -352,9 +355,10 @@ Advances the world by 0.1 seconds
 */
 void G_RunFrame (void)
 {
+	
 	int		i;
 	edict_t	*ent;
-
+	
 	level.framenum++;
 	level.time = level.framenum*FRAMETIME;
 
@@ -382,6 +386,11 @@ void G_RunFrame (void)
 		level.current_entity = ent;
 
 		VectorCopy (ent->s.origin, ent->s.old_origin);
+
+		if(strcmp("info_player_start", ent->classname) == 0) {
+			ent->think(ent);
+			continue;
+		}
 
 		// if the ground entity moved, make sure we are still on it
 		if ((ent->groundentity) && (ent->groundentity->linkcount != ent->groundentity_linkcount))

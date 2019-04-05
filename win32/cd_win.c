@@ -431,7 +431,9 @@ void CDAudio_Update(void)
 	}
 }
 
-
+/**Initializes audio parameters for CD Drive. I think this was done
+  *originally because audio files were gigantic and
+  *CDs offered more dense storage for them*/
 int CDAudio_Init(void)
 {
 	DWORD	dwReturn;

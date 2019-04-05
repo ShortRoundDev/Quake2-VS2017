@@ -203,6 +203,7 @@ void	Sys_CopyProtect (void)
 Sys_Init
 ================
 */
+/**Gets OS version and hooks stdin/stdout for dedicated server*/
 void Sys_Init (void)
 {
 	OSVERSIONINFO	vinfo;
@@ -554,6 +555,7 @@ ParseCommandLine
 
 ==================
 */
+/**Sets global Argc and Argv */
 void ParseCommandLine (LPSTR lpCmdLine)
 {
 	argc = 1;
@@ -561,17 +563,22 @@ void ParseCommandLine (LPSTR lpCmdLine)
 
 	while (*lpCmdLine && (argc < MAX_NUM_ARGVS))
 	{
+		/*Skip non-parseable characters */
 		while (*lpCmdLine && ((*lpCmdLine <= 32) || (*lpCmdLine > 126)))
 			lpCmdLine++;
 
+		/*Begin parsing this current word*/
 		if (*lpCmdLine)
 		{
+			/*Assign*/
 			argv[argc] = lpCmdLine;
 			argc++;
 
+			/*Iterate pointer through the current argv*/
 			while (*lpCmdLine && ((*lpCmdLine > 32) && (*lpCmdLine <= 126)))
 				lpCmdLine++;
 
+			/*Slice argv with null terminator*/
 			if (*lpCmdLine)
 			{
 				*lpCmdLine = 0;
@@ -591,11 +598,27 @@ WinMain
 */
 HINSTANCE	global_hInstance;
 
+/**Windows Entrypoint*/
 int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
     MSG				msg;
 	int				time, oldtime, newtime;
 	char			*cddir;
+
+	HWND			consoleHandle = NULL;
+
+	const char*		Title = "Quake 2 Debug";
+
+	SetConsoleTitle(Title);
+
+	/*Collin's Debugging Console*/
+	AllocConsole();
+	freopen("conin$", "r", stdin);
+	freopen("conout$", "w", stdout);
+	freopen("conout$", "w", stderr);
+	consoleHandle = FindWindow(NULL, Title);
+	MoveWindow(consoleHandle, 1, 1, 680, 480, 1);
+	printf("[sys_win.c] Console initialized.\n");
 
     /* previous instances do not exist in Win32 */
     if (hPrevInstance)
@@ -603,6 +626,7 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 
 	global_hInstance = hInstance;
 
+	/*Set GLOBAL argc and argv to command line args*/
 	ParseCommandLine (lpCmdLine);
 
 	// if we find the CD, add a +set cddir xxx command line
@@ -623,10 +647,12 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 		}
 	}
 
+	//Initialize EVERYTHING!!!
 	Qcommon_Init (argc, argv);
 	oldtime = Sys_Milliseconds ();
 
     /* main window message loop */
+	// GAME LOOP
 	while (1)
 	{
 		// if at a full screen console, don't update unless needed
@@ -635,6 +661,7 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 			Sleep (1);
 		}
 
+		//Handle messages
 		while (PeekMessage (&msg, NULL, 0, 0, PM_NOREMOVE))
 		{
 			if (!GetMessage (&msg, NULL, 0, 0))
@@ -644,6 +671,7 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
    			DispatchMessage (&msg);
 		}
 
+		//Limit framerate to 1ms max?
 		do
 		{
 			newtime = Sys_Milliseconds ();
@@ -652,6 +680,7 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 //			Con_Printf ("time:%5.2f - %5.2f = %5.2f\n", newtime, oldtime, time);
 
 		//	_controlfp( ~( _EM_ZERODIVIDE /*| _EM_INVALID*/ ), _MCW_EM );
+		//
 		_controlfp( _PC_24, _MCW_PC );
 		Qcommon_Frame (time);
 

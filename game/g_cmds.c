@@ -19,6 +19,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 #include "g_local.h"
 #include "m_player.h"
+#include "menu.h"
+void my_fire_blaster (edict_t *self, vec3_t start, vec3_t dir, int damage, int speed, int effect, qboolean hyper);
+void my_blaster_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf);
 
 
 char *ClientTeam (edict_t *ent)
@@ -779,6 +782,178 @@ void Cmd_Wave_f (edict_t *ent)
 	}
 }
 
+void Cmd_Menu_f (ent) {
+	char* MenuFile;
+	MenuFile = gi.argv(1);
+	if(MenuFile == NULL)
+		return;
+	OpenMenuFromFile(&Queue, gi.argv(1));
+}
+
+void Cmd_CloseMenu_f (ent) {
+	CloseAllMenus(&Queue);
+}
+
+void Cmd_Click_f(ent) {
+	long x, y;
+	struct MenuRenderItem *Item;
+
+	gi.GetCursorPos(&x, &y);
+	if(Queue.Top == NULL)
+		return;
+
+	Item = FindItemXY(Queue.Top->Value, x, y);
+	if(Item == NULL)
+		return;
+	if(Item->Id == NULL)
+		return;
+
+	DispatchEvent(Item->Id, "OnClick");
+}
+
+void Cmd_Identify_f (edict_t *ent)
+{
+	vec3_t start;
+	vec3_t end;
+	vec3_t look;
+	trace_t tr;
+	long x;
+	long y;
+	float distance;
+	float dx, dy, dz;
+	float vec[3];
+
+	gi.GetCursorPos(&x, &y);
+	gi.ProjectCursor(x, 768 - y, vec);
+	
+	VectorCopy(ent->s.origin, start);
+
+	/*distance = sqrt(
+		pow(vec[0] - start[0], 2) +
+		pow(vec[1] - start[1], 2) +
+		pow(vec[2] - start[2], 2)
+	);
+
+	dx = (vec[0] - start[0])/distance;
+	dy = (vec[1] - start[1])/distance;
+	dz = (vec[2] - start[2])/distance;
+
+	vec[0] += dx * 8192;
+	vec[1] += dy * 8192;
+	vec[2] += dz * 8192;*/
+
+	AngleVectors(ent->client->v_angle, look, NULL, NULL);
+
+	start[2] += ent->viewheight;
+
+	vec[0] = vec[0] - start[0];
+	vec[1] = vec[1] - start[1];
+	vec[2] *= -1;
+
+	printf("%f -> %f\n", vec[2], start[2]);
+
+	//TODO: Figure out the z vector for this thing, it keeps flipping the wrong way
+	
+	//AngleVectors(vec, forward, NULL, NULL);
+	//forward[YAW] = 1.0f;
+
+	//printf("End: %f, %f, %f\n", end[0], end[1], end[2]);
+
+	VectorMA(start, 8192, vec, end);
+
+	my_fire_blaster(ent, start, vec, 0, 100, EF_BLASTER, 0);
+
+	tr = gi.trace(start, NULL, NULL, end, ent, MASK_SHOT);
+
+	if(tr.ent) {
+		printf("%s\n", tr.ent->classname);
+	}
+}
+
+
+void my_fire_blaster (edict_t *self, vec3_t start, vec3_t dir, int damage, int speed, int effect, qboolean hyper)
+{
+	edict_t	*bolt;
+	trace_t	tr;
+
+	VectorNormalize (dir);
+
+	bolt = G_Spawn();
+	bolt->svflags = SVF_DEADMONSTER;
+	// yes, I know it looks weird that projectiles are deadmonsters
+	// what this means is that when prediction is used against the object
+	// (blaster/hyperblaster shots), the player won't be solid clipped against
+	// the object.  Right now trying to run into a firing hyperblaster
+	// is very jerky since you are predicted 'against' the shots.
+	VectorCopy (start, bolt->s.origin);
+	VectorCopy (start, bolt->s.old_origin);
+	vectoangles (dir, bolt->s.angles);
+	VectorScale (dir, speed, bolt->velocity);
+	bolt->movetype = MOVETYPE_FLYMISSILE;
+	bolt->clipmask = MASK_SHOT;
+	bolt->solid = SOLID_BBOX;
+	bolt->s.effects |= effect;
+	VectorClear (bolt->mins);
+	VectorClear (bolt->maxs);
+	bolt->s.modelindex = gi.modelindex ("models/objects/laser/tris.md2");
+	bolt->s.sound = gi.soundindex ("misc/lasfly.wav");
+	bolt->owner = self;
+	bolt->touch = my_blaster_touch;
+	bolt->nextthink = level.time + 2;
+	bolt->think = G_FreeEdict;
+	bolt->dmg = damage;
+	bolt->classname = "bolt";
+	if (hyper)
+		bolt->spawnflags = 1;
+	gi.linkentity (bolt);
+
+	tr = gi.trace (self->s.origin, NULL, NULL, bolt->s.origin, bolt, MASK_SHOT);
+	if (tr.fraction < 1.0)
+	{
+		VectorMA (bolt->s.origin, -10, dir, bolt->s.origin);
+		bolt->touch (bolt, tr.ent, NULL, NULL);
+	}
+}	
+
+void my_blaster_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
+{
+	int		mod;
+
+	if (other == self->owner)
+		return;
+
+	if (surf && (surf->flags & SURF_SKY))
+	{
+		G_FreeEdict (self);
+		return;
+	}
+
+	if (self->owner->client)
+		PlayerNoise(self->owner, self->s.origin, PNOISE_IMPACT);
+
+	if (other->takedamage)
+	{
+		if (self->spawnflags & 1)
+			mod = MOD_HYPERBLASTER;
+		else
+			mod = MOD_BLASTER;
+		T_Damage (other, self, self->owner, self->velocity, self->s.origin, plane->normal, self->dmg, 1, DAMAGE_ENERGY, mod);
+	}
+	else
+	{
+		gi.WriteByte (svc_temp_entity);
+		gi.WriteByte (TE_BLASTER);
+		gi.WritePosition (self->s.origin);
+		if (!plane)
+			gi.WriteDir (vec3_origin);
+		else
+			gi.WriteDir (plane->normal);
+		gi.multicast (self->s.origin, MULTICAST_PVS);
+	}
+
+	G_FreeEdict (self);
+}
+
 /*
 ==================
 Cmd_Say_f
@@ -985,8 +1160,16 @@ void ClientCommand (edict_t *ent)
 		Cmd_PutAway_f (ent);
 	else if (Q_stricmp (cmd, "wave") == 0)
 		Cmd_Wave_f (ent);
+	else if (Q_stricmp (cmd, "identify") == 0)
+		Cmd_Identify_f (ent);
+	else if (Q_stricmp (cmd, "menu") == 0)
+		Cmd_Menu_f (ent);
+	else if (Q_stricmp (cmd, "closemenu") == 0)
+		Cmd_CloseMenu_f (ent);
 	else if (Q_stricmp(cmd, "playerlist") == 0)
 		Cmd_PlayerList_f(ent);
+	else if (Q_stricmp(cmd, "click") == 0)
+		Cmd_Click_f(ent);
 	else	// anything that doesn't match a command will be a chat
 		Cmd_Say_f (ent, false, true);
 }

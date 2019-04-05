@@ -118,7 +118,7 @@ if (!freelook->value && lookspring->value)
 int			mouse_buttons;
 int			mouse_oldbuttonstate;
 POINT		current_pos;
-int			mouse_x, mouse_y, old_mouse_x, old_mouse_y, mx_accum, my_accum;
+int			mouse_x, mouse_y, old_mouse_x, old_mouse_y, mx_accum, my_accum, old_cursor_pos_x, old_cursor_pos_y;
 
 int			old_x, old_y;
 
@@ -175,15 +175,15 @@ void IN_ActivateMouse (void)
 	window_center_x = (window_rect.right + window_rect.left)/2;
 	window_center_y = (window_rect.top + window_rect.bottom)/2;
 
-	SetCursorPos (window_center_x, window_center_y);
+	//SetCursorPos (window_center_x, window_center_y);
 
 	old_x = window_center_x;
 	old_y = window_center_y;
 
 	SetCapture ( cl_hwnd );
 	ClipCursor (&window_rect);
-	while (ShowCursor (FALSE) >= 0)
-		;
+	//while (ShowCursor (FALSE) >= 0)
+	//	;
 }
 
 
@@ -208,8 +208,8 @@ void IN_DeactivateMouse (void)
 
 	ClipCursor (NULL);
 	ReleaseCapture ();
-	while (ShowCursor (TRUE) < 0)
-		;
+	//while (ShowCursor (TRUE) < 0)
+	//	;
 }
 
 
@@ -219,6 +219,7 @@ void IN_DeactivateMouse (void)
 IN_StartupMouse
 ===========
 */
+/**Initializes mouse global variables*/
 void IN_StartupMouse (void)
 {
 	cvar_t		*cv;
@@ -272,6 +273,8 @@ IN_MouseMove
 void IN_MouseMove (usercmd_t *cmd)
 {
 	int		mx, my;
+	int width = window_center_x * 2;
+	int height = window_center_y * 2;
 
 	if (!mouseactive)
 		return;
@@ -282,7 +285,9 @@ void IN_MouseMove (usercmd_t *cmd)
 
 	mx = current_pos.x - window_center_x;
 	my = current_pos.y - window_center_y;
-
+	
+	old_cursor_pos_x = current_pos.x;
+	old_cursor_pos_y = current_pos.y;
 #if 0
 	if (!mx && !my)
 		return;
@@ -292,6 +297,7 @@ void IN_MouseMove (usercmd_t *cmd)
 	{
 		mouse_x = (mx + old_mouse_x) * 0.5;
 		mouse_y = (my + old_mouse_y) * 0.5;
+		printf("\tFiltered\n");
 	}
 	else
 	{
@@ -305,8 +311,9 @@ void IN_MouseMove (usercmd_t *cmd)
 	mouse_x *= sensitivity->value;
 	mouse_y *= sensitivity->value;
 
+#if 0
 // add mouse X/Y movement to cmd
-	if ( (in_strafe.state & 1) || (lookstrafe->value && mlooking ))
+	  if ( (in_strafe.state & 1) || (lookstrafe->value && mlooking ))
 		cmd->sidemove += m_side->value * mouse_x;
 	else
 		cl.viewangles[YAW] -= m_yaw->value * mouse_x;
@@ -323,6 +330,7 @@ void IN_MouseMove (usercmd_t *cmd)
 	// force the mouse to the center, so there's room to move
 	if (mx || my)
 		SetCursorPos (window_center_x, window_center_y);
+#endif
 }
 
 
@@ -343,6 +351,7 @@ cvar_t	*v_centerspeed;
 IN_Init
 ===========
 */
+/**Get input settings for global variables*/
 void IN_Init (void)
 {
 	// mouse variables
@@ -379,7 +388,10 @@ void IN_Init (void)
 
 	Cmd_AddCommand ("joy_advancedupdate", Joy_AdvancedUpdate_f);
 
+	//Initialize Mouse
 	IN_StartupMouse ();
+
+	//Initialize Joystick
 	IN_StartupJoystick ();
 }
 
@@ -482,7 +494,8 @@ JOYSTICK
 =============== 
 IN_StartupJoystick 
 =============== 
-*/  
+*/
+/**Initialize global variables related to the joystick*/
 void IN_StartupJoystick (void) 
 { 
 	int			numdevs;

@@ -931,6 +931,8 @@ G_RunEntity
 */
 void G_RunEntity (edict_t *ent)
 {
+	return;
+
 	if (ent->prethink)
 		ent->prethink (ent);
 

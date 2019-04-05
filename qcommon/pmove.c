@@ -1237,6 +1237,8 @@ Pmove
 Can be called by either the server or the client
 ================
 */
+/**Moves a player. COLLIN: Experiment with this*/
+//COLLIN: STOPPED HERE 3/15/2019
 void Pmove (pmove_t *pmove)
 {
 	pm = pmove;
@@ -1268,8 +1270,10 @@ void Pmove (pmove_t *pmove)
 
 	PM_ClampAngles ();
 
+	//COLLIN: Look into spectator mode to allow 3rd person cam to follow player
 	if (pm->s.pm_type == PM_SPECTATOR)
 	{
+		//false means noclip
 		PM_FlyMove (false);
 		PM_SnapPosition ();
 		return;

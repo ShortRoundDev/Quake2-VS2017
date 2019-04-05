@@ -400,6 +400,8 @@ void ( APIENTRY * qglViewport )(GLint x, GLint y, GLsizei width, GLsizei height)
 void ( APIENTRY * qglLockArraysEXT)( int, int);
 void ( APIENTRY * qglUnlockArraysEXT) ( void );
 
+void (APIENTRY * qgluUnProject)(GLdouble winX, GLdouble winY, GLdouble winZ, const GLdouble * model, const GLdouble * proj, const GLint * view, GLdouble* objX, GLdouble* objY, GLdouble* objZ);
+
 BOOL ( WINAPI * qwglSwapIntervalEXT)( int interval );
 BOOL ( WINAPI * qwglGetDeviceGammaRampEXT)( unsigned char *, unsigned char *, unsigned char * );
 BOOL ( WINAPI * qwglSetDeviceGammaRampEXT)( const unsigned char *, const unsigned char *, const unsigned char * );
@@ -745,6 +747,8 @@ static void ( APIENTRY * dllVertex4s )(GLshort x, GLshort y, GLshort z, GLshort 
 static void ( APIENTRY * dllVertex4sv )(const GLshort *v);
 static void ( APIENTRY * dllVertexPointer )(GLint size, GLenum type, GLsizei stride, const GLvoid *pointer);
 static void ( APIENTRY * dllViewport )(GLint x, GLint y, GLsizei width, GLsizei height);
+static void ( APIENTRY * dllGluUnProject)(GLdouble winX, GLdouble winY, GLdouble winZ, const GLdouble * model, const GLdouble * proj, const GLint * view, GLdouble* objX, GLdouble* objY, GLdouble* objZ);
+
 
 static void APIENTRY logAccum(GLenum op, GLfloat value)
 {
@@ -3388,6 +3392,7 @@ qboolean QGL_Init( const char *dllname )
 	qglVertex4sv                 = 	dllVertex4sv                 = GPA( "glVertex4sv" );
 	qglVertexPointer             = 	dllVertexPointer             = GPA( "glVertexPointer" );
 	qglViewport                  = 	dllViewport                  = GPA( "glViewport" );
+	qgluUnProject				 =	dllGluUnProject				 = GPA("gluUnProject");
 
 	qwglCopyContext              = GPA( "wglCopyContext" );
 	qwglCreateContext            = GPA( "wglCreateContext" );

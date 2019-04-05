@@ -1,3 +1,4 @@
+#pragma once
 /*
 Copyright (C) 1997-2001 Id Software, Inc.
 
@@ -36,6 +37,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "keys.h"
 #include "console.h"
 #include "cdaudio.h"
+
+extern struct game_export_s* ge;
 
 //=============================================================================
 

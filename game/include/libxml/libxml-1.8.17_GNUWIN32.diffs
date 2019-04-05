@@ -1,0 +1,22 @@
+diff -cr -x config.log -x config.status -x *.Po -I libxml-1.8.17-orig* libxml-1.8.17-orig/tester.c libxml-1.8.17/tester.c
+*** libxml-1.8.17-orig/tester.c	Sun Mar 25 01:14:16 2001
+--- libxml-1.8.17/tester.c	Mon Mar  4 20:54:44 2002
+***************
+*** 62,68 ****
+  static int blanks = 0;
+  static int oldparser = 0;
+  
+! extern int xmlDoValidityCheckingDefaultValue;
+  
+  /**
+   * xmlShellReadline:
+--- 62,70 ----
+  static int blanks = 0;
+  static int oldparser = 0;
+  
+! #include "import_dll.h"
+! 
+! DLL_LIBXML1_IMPORT int xmlDoValidityCheckingDefaultValue;
+  
+  /**
+   * xmlShellReadline:
