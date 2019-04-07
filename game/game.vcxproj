@@ -26,6 +26,7 @@
     <SccProjectName />
     <SccLocalPath />
     <ProjectGuid>{93053AB7-585E-46A1-82F1-797B0C94F379}</ProjectGuid>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Template|Win32'" Label="Configuration">
@@ -92,10 +93,12 @@
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>.\..\debug\</OutDir>
+    <OutDir>..\..\..\..\..\..\..\..\Program Files %28x86%29\GOG Galaxy\Games\quake2\baseq2</OutDir>
     <IntDir>.\debug\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>C:\Users\colli\Projects\Code\cpp\Modern - Copy\Quake2-VS2017\game\include;$(IncludePath)</IncludePath>
+    <TargetName>gamex86</TargetName>
+    <TargetExt>.dll</TargetExt>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug Alpha|Win32'">
     <ClCompile>
