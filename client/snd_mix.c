@@ -148,7 +148,7 @@ void S_TransferPaintBuffer(int endtime)
 	int 	*p;
 	int 	step;
 	int		val;
-	unsigned long *pbuf;
+	unsigned long *pbuf = NULL;
 
 	pbuf = (unsigned long *)dma.buffer;
 

@@ -56,7 +56,7 @@ void *Hunk_Begin (int maxsize)
 
 void *Hunk_Alloc (int size)
 {
-	void	*buf;
+	void	*buf = NULL;
 
 	// round to cacheline
 	size = (size+31)&~31;

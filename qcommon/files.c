@@ -347,7 +347,7 @@ void FS_Read (void *buffer, int len, FILE *f)
 {
 	int		block, remaining;
 	int		read;
-	byte	*buf;
+	byte	*buf = NULL;
 	int		tries;
 
 	buf = (byte *)buffer;
@@ -394,7 +394,7 @@ a null buffer will just return the file length without loading
 int FS_LoadFile (char *path, void **buffer)
 {
 	FILE	*h;
-	byte	*buf;
+	byte	*buf = NULL;
 	int		len;
 
 	buf = NULL;	// quiet compiler warning

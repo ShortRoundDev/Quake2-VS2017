@@ -5,13 +5,21 @@
 void LuaInit(void) {
 	state = luaL_newstate();
 	luaL_openlibs(state);
-	LuaLoadScript("baseq2/scripts/main.lua");
 
 	//Register functions
 	lua_pushcfunction(state, Reg_CloseMenu);
 	lua_setglobal(state, "CloseMenu");
 
-	__LuaStackDump(state);
+	lua_pushcfunction(state, LuaPrint);
+	lua_setglobal(state, "print");
+
+	lua_pushcfunction(state, LuaSetModel);
+	lua_setglobal(state, "SetModel");
+
+	LuaLoadScript("baseq2/scripts/main.lua");
+
+	EntityList.Head = NULL;
+	EntityList.Tail = NULL;
 }
 
 void LuaDestroy(void) {
@@ -22,6 +30,13 @@ void LuaCreateDom(char* ElementName) {
 	lua_getglobal(state, "Document");
 	lua_createtable(state, 0, 1);
 	lua_setfield(state, -2, ElementName);
+	lua_pop(state, 1);
+}
+
+void LuaCreateEntityType(char* EntityName) {
+	lua_getglobal(state, "Entity");
+	lua_createtable(state, 0, 1);
+	lua_setfield(state, -2, EntityName);
 	lua_pop(state, 1);
 }
 
@@ -46,6 +61,42 @@ void LuaRunInitScript(char* ElementName) {
 	}
 
 	lua_pcall(state, 0, 0, 0);
+	lua_settop(state, -3);
+}
+
+void LuaInitEntity(char* EntityName, edict_t* ent) {
+	printf("Loading %s\n", EntityName);
+	lua_getglobal(state, "Entity");
+	if (lua_isnil(state, -1)) {
+		printf("Global table `Entity` has not been initialized!\n");
+		lua_settop(state, -1);
+		return;
+	}
+	lua_getfield(state, -1, EntityName);
+	if (lua_isnil(state, -1)) {
+		printf("ElementName not found!\n");
+		lua_settop(state, -2);
+		return;
+	}
+	lua_getfield(state, -1, "Init");
+	if (lua_isnil(state, -1)) {
+		printf("Init not found!\n");
+		lua_settop(state, -3);
+		return;
+	}
+	if (!lua_isfunction(state, -1)) {
+		printf("Init is not a function for some reason...");
+		lua_settop(state, -3);
+		return;
+	}
+	LuaPushEnt(ent);
+	int err = lua_pcall(state, 1, 0, 0);
+	if (err == LUA_ERRRUN)
+		printf("ERRRUN\n");
+	if (err == LUA_ERRMEM)
+		printf("ERRMEM\n");
+	if (err == LUA_ERRERR)
+		printf("ERRERR\n");
 	lua_settop(state, -3);
 }
 
@@ -75,25 +126,41 @@ void __LuaStackDump (lua_State *L) {
 	printf("--------------- Stack Dump Finished ---------------\n" );
 }
 
-int LuaInitEnt(char* Name, lua_State *L) {
-	lua_getglobal(L, "Types");
-	lua_getfield(L, -1, Name);
-	if (lua_isnil(L, -1)) {
-		printf("ElementName not found!\n");
-		lua_settop(L, -2);
-		return 0;
-	}
-	lua_getfield(L, -1, "Init");
-	if (lua_isnil(L, -1)) {
-		printf("Init not found!\n");
-		lua_settop(L, -3);
-		return;
-	}
-
-	lua_pcall(state, 0, 0, 0);
-	lua_settop(state, -3);
+void LuaSetFieldUint32_t(const char* Field, uint32_t Value) {
+	lua_pushinteger(state, Value);
+	lua_setfield(state, -2, Field);
+}
+void LuaSetFieldString(const char* Field, const char* Value) {
+	if (Value == NULL)
+		LuaSetFieldNil(Field);
+	lua_pushstring(state, Value);
+	lua_setfield(state, -2, Field);
+}
+void LuaSetFieldBoolean(const char* Field, int Value) {
+	lua_pushboolean(state, Value);
+	lua_setfield(state, -2, Field);
+}
+void LuaSetFieldFloat(const char* Field, float Value) {
+	lua_pushnumber(state, Value);
+	lua_setfield(state, -2, Field);
+}
+void LuaSetFieldNil(const char* Field) {
+	lua_pushnil(state);
+	lua_setfield(state, -2, Field);
 }
 
+void LuaPushEnt(edict_t* ent) {
+	lua_createtable(state, 0, 20);
+
+	//Custom fields. TODO: Add non-custom fields as well
+	LuaSetFieldString("entId", ent->entId);
+	LuaSetFieldString("luaClassName", ent->luaClassName);
+	LuaSetFieldUint32_t("movetype", ent->movetype);
+	LuaSetFieldUint32_t("flags", ent->flags);
+	LuaSetFieldString("model", ent->model);
+	LuaSetFieldFloat("freetime", ent->freetime);
+	LuaSetFieldString("message", ent->message);
+}
 
 //Registered Functions
 static int Reg_CloseMenu(lua_State *L) {
@@ -102,7 +169,47 @@ static int Reg_CloseMenu(lua_State *L) {
 
 //Library functions
 int sp_LuaSpawn(edict_t* ent) {
+	//generic, inline lua entity
+	if (!strcmp(ent->classname, "lua_ent")) {
+		if (ent->luaClassName == NULL) {
+			printf("ERROR: Missing Lua Class Name in lua_ent! Skipping\n");
+			return;
+		}
+		ent->classname = ent->luaClassName;
+		printf("Setting lua classname: %s\n", ent->classname);
+	}
+	printf("Loading Lua Entity: %s\n, {%s}", ent->classname, ent->entId);
+	char* FilePathName = calloc(
+		strlen("scripts/entities/") +
+		strlen(ent->classname) +
+		strlen("/entity.lua") + 1,
+		sizeof(char)
+	); //+1 for null terminator
 
+	strcpy(FilePathName, "baseq2/scripts/entities/");
+	strcat(FilePathName, ent->classname);
+	strcat(FilePathName, "/entity.lua");
+
+	//Initialize class type
+	LuaCreateEntityType(ent->classname);
+
+	LuaLoadScript(FilePathName);
+	LuaInitEntity(ent->classname, ent);
+	free(FilePathName);
+}
+
+static int LuaPrint(lua_State* L) {
+	int nargs = lua_gettop(L);
+	for (int i = 1; i <= nargs; i++) {
+		if (lua_isstring(L, i)) {
+			printf("%s", lua_tostring(L, i));
+		}
+	}
+	printf("\n");
+}
+
+static int LuaSetModel(lua_State* L) {
+	__LuaStackDump(L);
 }
 
 //Entity List functions
@@ -113,18 +220,25 @@ void EntityListAdd(edict_t* ent) {
 	}
 	struct EntityListNode* Node = calloc(1, sizeof(struct EntityListNode));
 	Node->Value = ent;
+	Node->Next = NULL;
+	
 	if (EntityList.Head == NULL) {
 		EntityList.Head = Node;
 		EntityList.Tail = Node;
 		return;
 	}
-	
+
 	struct EntityListNode* Cursor = EntityList.Head;
+	if (Cursor == NULL) {
+		printf("ERROR: NULL HEAD ON ADD!\n");
+		return;
+	}
 	while (Cursor->Next != NULL) {
 		Cursor = Cursor->Next;
 	}
-	Cursor->Next = ent;
-	EntityList.Tail = ent;
+
+	Cursor->Next = Node;
+	EntityList.Tail = Node;
 }
 
 edict_t* EntityListFind(char* Id) {

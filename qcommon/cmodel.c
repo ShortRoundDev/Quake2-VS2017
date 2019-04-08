@@ -547,7 +547,7 @@ Loads in the map and all submodels
 */
 cmodel_t *CM_LoadMap (char *name, qboolean clientload, unsigned *checksum)
 {
-	unsigned		*buf;
+	unsigned		*buf = NULL;
 	int				i;
 	dheader_t		header;
 	int				length;

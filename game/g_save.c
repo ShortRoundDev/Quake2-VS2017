@@ -29,6 +29,7 @@ mmove_t mmove_reloc;
 field_t fields[] = {
 	{"classname", FOFS(classname), F_LSTRING},
 	{"entId", FOFS(entId), F_LSTRING},
+	{"luaClassName", FOFS(luaClassName), F_LSTRING},
 	{"model", FOFS(model), F_LSTRING},
 	{"spawnflags", FOFS(spawnflags), F_INT},
 	{"speed", FOFS(speed), F_FLOAT},

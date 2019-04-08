@@ -106,7 +106,7 @@ void Sys_Quit (void)
 
 void WinError (void)
 {
-	LPVOID lpMsgBuf;
+	LPVOID lpMsgBuf = NULL;
 
 	FormatMessage( 
 		FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,

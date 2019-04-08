@@ -428,7 +428,7 @@ Draw_FadeScreen
 void Draw_FadeScreen (void)
 {
 	int			x,y;
-	byte		*pbuf;
+	byte		*pbuf = NULL;
 	int	t;
 
 	for (y=0 ; y<vid.height ; y++)

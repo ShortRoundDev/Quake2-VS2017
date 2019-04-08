@@ -204,7 +204,7 @@ LoadTGA
 void LoadTGA (char *name, byte **pic, int *width, int *height)
 {
 	int		columns, rows, numPixels;
-	byte	*pixbuf;
+	byte	*pixbuf = NULL;
 	int		row, column;
 	byte	*buf_p;
 	byte	*buffer;

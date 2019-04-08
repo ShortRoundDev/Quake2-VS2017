@@ -93,7 +93,7 @@
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>..\..\..\..\..\..\..\..\Program Files %28x86%29\GOG Galaxy\Games\quake2\baseq2</OutDir>
+    <OutDir>..\debug</OutDir>
     <IntDir>.\debug\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>C:\Users\colli\Projects\Code\cpp\Modern - Copy\Quake2-VS2017\game\include;$(IncludePath)</IncludePath>

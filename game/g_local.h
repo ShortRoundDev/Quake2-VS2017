@@ -1002,6 +1002,7 @@ struct edict_s
 
 	//================================
 	char*		entId;
+	char*		luaClassName;
 
 	int			movetype;
 	int			flags;

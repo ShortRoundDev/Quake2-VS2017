@@ -20,6 +20,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "g_local.h"
 #include "g_lua.h"
+#include "Rpc.h"
 
 typedef struct
 {
@@ -286,6 +287,29 @@ void ED_CallSpawn (edict_t *ent)
 	{
 		gi.dprintf ("ED_CallSpawn: NULL classname\n");
 		return;
+	}
+
+	if (!ent->entId) {
+		GUID guid;
+		if (CoCreateGuid(&guid) != RPC_S_OK) {
+			printf("FAILURE, couldn't generate GUID for entity!\n");
+			return;
+		}
+		ent->entId = calloc(38, sizeof(char));
+		sprintf(ent->entId, "%08X-%04X-%04X-%02X%02X-%02X%02X%02X%02X%02X%02X",
+			guid.Data1,
+			guid.Data2,
+			guid.Data3,
+			guid.Data4[0],
+			guid.Data4[1],
+			guid.Data4[2],
+			guid.Data4[3],
+			guid.Data4[4],
+			guid.Data4[5],
+			guid.Data4[6],
+			guid.Data4[7]
+		);
+		EntityListAdd(ent);
 	}
 
 	// check item spawn functions
