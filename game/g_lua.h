@@ -43,6 +43,7 @@ static int Reg_CloseMenu(lua_State *L);
 int sp_LuaSpawn(edict_t* ent);
 static int LuaPrint(lua_State* L);
 static int LuaSetModel(lua_State* L);
+static int LuaThink(edict_t* p);
 
 //Entity List functions
 void EntityListAdd(edict_t* ent);

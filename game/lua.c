@@ -196,6 +196,12 @@ int sp_LuaSpawn(edict_t* ent) {
 	LuaLoadScript(FilePathName);
 	LuaInitEntity(ent->classname, ent);
 	free(FilePathName);
+	ent->think = LuaThink;
+	gi.linkentity(ent);
+}
+
+static int LuaThink(edict_t* p) {
+	printf("THINKING!\n");
 }
 
 static int LuaPrint(lua_State* L) {
@@ -209,7 +215,21 @@ static int LuaPrint(lua_State* L) {
 }
 
 static int LuaSetModel(lua_State* L) {
-	__LuaStackDump(L);
+	char *Path = lua_tostring(L, -1);
+	lua_pop(L, 1);
+	lua_getfield(L, -1, "entId");
+	char* entId = lua_tostring(L, -1);
+	lua_pop(L, 2);
+	
+	edict_t* ent = EntityListFind(entId);
+	if (ent == NULL) {
+		printf("Couldn't find the entity\n");
+	}
+	else {
+		printf("Path: %s\n", Path);
+		ent->s.modelindex = gi.modelindex(Path);
+	}
+		
 }
 
 //Entity List functions
@@ -261,6 +281,7 @@ edict_t* EntityListFind(char* Id) {
 		if (strcmp(Cursor->Value->entId, Id) == 0) {
 			return Cursor->Value;
 		}
+		Cursor = Cursor->Next;
 	}
 	return NULL;
 }
