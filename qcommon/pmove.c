@@ -668,6 +668,8 @@ void PM_AirMove (void)
 PM_CatagorizePosition
 =============
 */
+
+//Collin: check this out
 void PM_CatagorizePosition (void)
 {
 	vec3_t		point;

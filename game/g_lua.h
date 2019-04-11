@@ -22,7 +22,7 @@ lua_State* state;
 void LuaInit(void);
 void LuaDestroy(void);
 void LuaCreateDom(char* ElementName);
-void LuaCreateEntityType(char* EntityName);
+int LuaCreateEntityType(char* EntityName);
 void LuaLoadScript(char* ScriptName);
 void LuaRunInitScript(char* ElementName);
 void LuaInitEntity(char* EntityName, edict_t* ent);
@@ -44,8 +44,12 @@ int sp_LuaSpawn(edict_t* ent);
 static int LuaPrint(lua_State* L);
 static int LuaSetModel(lua_State* L);
 static int LuaThink(edict_t* p);
+static int LuaMove(lua_State* L);
 
 //Entity List functions
 void EntityListAdd(edict_t* ent);
 edict_t* EntityListFind(char* Id);
 void EntityListRemove(edict_t* ent);
+
+//Forward declarations:
+qboolean M_walkmove(edict_t *ent, float yaw, float dist);

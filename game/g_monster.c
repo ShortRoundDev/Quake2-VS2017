@@ -137,7 +137,7 @@ void AttackFinished (edict_t *self, float time)
 	self->monsterinfo.attack_finished = level.time + time;
 }
 
-
+//Collin: Check this out
 void M_CheckGround (edict_t *ent)
 {
 	vec3_t		point;

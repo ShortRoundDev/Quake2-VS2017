@@ -16,6 +16,9 @@ void LuaInit(void) {
 	lua_pushcfunction(state, LuaSetModel);
 	lua_setglobal(state, "SetModel");
 
+	lua_pushcfunction(state, LuaMove);
+	lua_setglobal(state, "Move");
+
 	LuaLoadScript("baseq2/scripts/main.lua");
 
 	EntityList.Head = NULL;
@@ -33,11 +36,21 @@ void LuaCreateDom(char* ElementName) {
 	lua_pop(state, 1);
 }
 
-void LuaCreateEntityType(char* EntityName) {
+int LuaCreateEntityType(char* EntityName) {
 	lua_getglobal(state, "Entity");
+	lua_getfield(state, -1, EntityName);
+	
+	//Entity Definition already exists
+	if (!lua_isnil(state, -1)) {
+		lua_settop(state, -2);
+		return 0;
+	}
+	lua_pop(state, 1);
+
 	lua_createtable(state, 0, 1);
 	lua_setfield(state, -2, EntityName);
 	lua_pop(state, 1);
+	return 1;
 }
 
 void LuaLoadScript(char* ScriptName) {
@@ -160,6 +173,7 @@ void LuaPushEnt(edict_t* ent) {
 	LuaSetFieldString("model", ent->model);
 	LuaSetFieldFloat("freetime", ent->freetime);
 	LuaSetFieldString("message", ent->message);
+
 }
 
 //Registered Functions
@@ -191,17 +205,59 @@ int sp_LuaSpawn(edict_t* ent) {
 	strcat(FilePathName, "/entity.lua");
 
 	//Initialize class type
-	LuaCreateEntityType(ent->classname);
+	if (LuaCreateEntityType(ent->classname))
+		LuaLoadScript(FilePathName);
 
-	LuaLoadScript(FilePathName);
 	LuaInitEntity(ent->classname, ent);
 	free(FilePathName);
 	ent->think = LuaThink;
+	ent->monsterinfo.scale = 1.2f;
+	VectorSet(ent->mins, -16, -16, -24);
+	VectorSet(ent->maxs, 16, 16, 32);
+	ent->movetype = MOVETYPE_STEP;
+	ent->solid = SOLID_BBOX;
 	gi.linkentity(ent);
 }
 
 static int LuaThink(edict_t* p) {
-	printf("THINKING!\n");
+	lua_getglobal(state, "Entity");
+	if (lua_isnil(state, -1)) {
+		printf("Global table `Entity` has not been initialized!\n");
+		lua_settop(state, -1);
+		return;
+	}
+	lua_getfield(state, -1, p->luaClassName);
+	if (lua_isnil(state, -1)) {
+		printf("ElementName not found!\n");
+		lua_settop(state, -2);
+		return;
+	}
+	lua_getfield(state, -1, "Think");
+	if (lua_isnil(state, -1)) {
+		printf("Think not found!\n");
+		lua_settop(state, -3);
+		return;
+	}
+	if (!lua_isfunction(state, -1)) {
+		printf("Think is not a function for some reason...");
+		lua_settop(state, -3);
+		return;
+	}
+	LuaPushEnt(p);
+	int err = lua_pcall(state, 1, 0, 0);
+}
+
+static int LuaMove(lua_State* L) {
+	double Dist = lua_tonumber(L, -1);
+	lua_pop(L, 1);
+	double Direction = lua_tonumber(L, -2);
+	lua_pop(L, 1);
+	lua_getfield(L, -1, "entId");
+	char* entId = lua_tostring(L, -1);
+	lua_pop(L, 2);
+	edict_t* ent = EntityListFind(entId);
+	//ent->flags |= FL_FLY;
+	M_walkmove(ent, Direction, Dist);
 }
 
 static int LuaPrint(lua_State* L) {

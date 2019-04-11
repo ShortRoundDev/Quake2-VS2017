@@ -834,6 +834,8 @@ void SV_Physics_Step (edict_t *ent)
 		wasonground = true;
 	else
 		wasonground = false;
+	if(ent->luaClassName)
+		printf("Was on ground: %d\n", wasonground);
 		
 	if (ent->avelocity[0] || ent->avelocity[1] || ent->avelocity[2])
 		SV_AddRotationalFriction (ent);
@@ -847,8 +849,11 @@ void SV_Physics_Step (edict_t *ent)
 			{
 				if (ent->velocity[2] < sv_gravity->value*-0.1)
 					hitsound = true;
-				if (ent->waterlevel == 0)
-					SV_AddGravity (ent);
+				if (ent->waterlevel == 0) {
+					if(ent->luaClassName)
+						printf("Adding gravity!\n");
+					SV_AddGravity(ent);
+				}
 			}
 
 	// friction for flying monsters that have been given vertical velocity
@@ -905,7 +910,9 @@ void SV_Physics_Step (edict_t *ent)
 			mask = MASK_MONSTERSOLID;
 		else
 			mask = MASK_SOLID;
-		SV_FlyMove (ent, FRAMETIME, mask);
+		int flyres = SV_FlyMove (ent, FRAMETIME, mask);		
+		if (ent->luaClassName)
+			printf("Fly Result: %d\n", flyres);
 
 		gi.linkentity (ent);
 		G_TouchTriggers (ent);
@@ -931,11 +938,10 @@ G_RunEntity
 */
 void G_RunEntity (edict_t *ent)
 {
-	return;
-
 	if (ent->prethink)
 		ent->prethink (ent);
-
+	if (ent->luaClassName)
+		printf("Move type: %d\n", ent->movetype);
 	switch ( (int)ent->movetype)
 	{
 	case MOVETYPE_PUSH:

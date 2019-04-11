@@ -404,11 +404,16 @@ void G_RunFrame (void)
 
 		if (i > 0 && i <= maxclients->value)
 		{
+			if (ent->luaClassName)
+				printf("Not Running lua entity; i <= maxclients->value");
 			ClientBeginServerFrame (ent);
 			continue;
 		}
-
+		if (ent->luaClassName)
+			printf("Running Lua Entity\n");
 		G_RunEntity (ent);
+		if (ent->luaClassName && ent->think)
+			ent->think(ent);
 	}
 
 	// see if it is time to end a deathmatch
