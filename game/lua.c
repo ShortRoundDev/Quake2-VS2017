@@ -19,6 +19,12 @@ void LuaInit(void) {
 	lua_pushcfunction(state, LuaMove);
 	lua_setglobal(state, "Move");
 
+	lua_pushcfunction(state, LuaLook);
+	lua_setglobal(state, "Look");
+
+	lua_pushcfunction(state, LuaGetEntByName);
+	lua_setglobal(state, "GetByName");
+
 	LuaLoadScript("baseq2/scripts/main.lua");
 
 	EntityList.Head = NULL;
@@ -30,16 +36,17 @@ void LuaDestroy(void) {
 }
 
 void LuaCreateDom(char* ElementName) {
-	lua_getglobal(state, "Document");
-	lua_createtable(state, 0, 1);
-	lua_setfield(state, -2, ElementName);
-	lua_pop(state, 1);
+	LuaCreateGlobalTable("Document", ElementName);
 }
 
 int LuaCreateEntityType(char* EntityName) {
-	lua_getglobal(state, "Entity");
-	lua_getfield(state, -1, EntityName);
-	
+	LuaCreateGlobalTable("Entity", EntityName);
+}
+
+void LuaCreateGlobalTable(char* Global, char* Table) {
+	lua_getglobal(state, Global);
+	lua_getfield(state, -1, Table);
+
 	//Entity Definition already exists
 	if (!lua_isnil(state, -1)) {
 		lua_settop(state, -2);
@@ -48,7 +55,7 @@ int LuaCreateEntityType(char* EntityName) {
 	lua_pop(state, 1);
 
 	lua_createtable(state, 0, 1);
-	lua_setfield(state, -2, EntityName);
+	lua_setfield(state, -2, Table);
 	lua_pop(state, 1);
 	return 1;
 }
@@ -59,58 +66,11 @@ void LuaLoadScript(char* ScriptName) {
 }
 
 void LuaRunInitScript(char* ElementName) {
-	lua_getglobal(state, "Document");
-	lua_getfield(state, -1, ElementName);
-	if(lua_isnil(state, -1)) {
-		printf("ElementName not found!\n");
-		lua_settop(state, -2);
-		return;
-	}
-	lua_getfield(state, -1, "OnLoad");
-	if(lua_isnil(state, -1)) {
-		printf("Onload not found!\n");
-		lua_settop(state, -3);
-		return;
-	}
-
-	lua_pcall(state, 0, 0, 0);
-	lua_settop(state, -3);
+	LuaCallGlobalObjectFunction("Document", ElementName, "OnLoad");
 }
 
-void LuaInitEntity(char* EntityName, edict_t* ent) {
-	printf("Loading %s\n", EntityName);
-	lua_getglobal(state, "Entity");
-	if (lua_isnil(state, -1)) {
-		printf("Global table `Entity` has not been initialized!\n");
-		lua_settop(state, -1);
-		return;
-	}
-	lua_getfield(state, -1, EntityName);
-	if (lua_isnil(state, -1)) {
-		printf("ElementName not found!\n");
-		lua_settop(state, -2);
-		return;
-	}
-	lua_getfield(state, -1, "Init");
-	if (lua_isnil(state, -1)) {
-		printf("Init not found!\n");
-		lua_settop(state, -3);
-		return;
-	}
-	if (!lua_isfunction(state, -1)) {
-		printf("Init is not a function for some reason...");
-		lua_settop(state, -3);
-		return;
-	}
-	LuaPushEnt(ent);
-	int err = lua_pcall(state, 1, 0, 0);
-	if (err == LUA_ERRRUN)
-		printf("ERRRUN\n");
-	if (err == LUA_ERRMEM)
-		printf("ERRMEM\n");
-	if (err == LUA_ERRERR)
-		printf("ERRERR\n");
-	lua_settop(state, -3);
+void LuaInitEntity(edict_t* ent) {
+	LuaCallEntityFunction(ent, "Init");
 }
 
 void __LuaStackDump (lua_State *L) {
@@ -173,6 +133,8 @@ void LuaPushEnt(edict_t* ent) {
 	LuaSetFieldString("model", ent->model);
 	LuaSetFieldFloat("freetime", ent->freetime);
 	LuaSetFieldString("message", ent->message);
+	LuaSetFieldFloat("y", ent->s.origin[0]);
+	LuaSetFieldFloat("x", ent->s.origin[1]);
 
 }
 
@@ -208,10 +170,10 @@ int sp_LuaSpawn(edict_t* ent) {
 	if (LuaCreateEntityType(ent->classname))
 		LuaLoadScript(FilePathName);
 
-	LuaInitEntity(ent->classname, ent);
+	LuaInitEntity(ent);
 	free(FilePathName);
 	ent->think = LuaThink;
-	ent->monsterinfo.scale = 1.2f;
+	ent->monsterinfo.scale = 10.0f;
 	VectorSet(ent->mins, -16, -16, -24);
 	VectorSet(ent->maxs, 16, 16, 32);
 	ent->movetype = MOVETYPE_STEP;
@@ -219,45 +181,98 @@ int sp_LuaSpawn(edict_t* ent) {
 	gi.linkentity(ent);
 }
 
-static int LuaThink(edict_t* p) {
-	lua_getglobal(state, "Entity");
+static int LuaCallGlobalObjectFunctionWithEnt(const char* Global, const char* Object, const char* Function, edict_t* ent) {
+	_Bool Kill = false;
+	if (Global == NULL) {
+		printf("ERROR: Global cannot be NULL!\n");
+		Kill = true;
+	}
+
+	if (Object == NULL) {
+		printf("ERROR: Object cannot be NULL!\n");
+		Kill = true;
+	}
+
+	if (Object == NULL) {
+		printf("ERROR: Function cannot be NULL!\n");
+		Kill = true;
+	}
+
+	if (Kill)
+		return -1;
+
+	lua_getglobal(state, Global);
 	if (lua_isnil(state, -1)) {
-		printf("Global table `Entity` has not been initialized!\n");
+		printf("Global table `%s` has not been initialized!\n", Global);
 		lua_settop(state, -1);
 		return;
 	}
-	lua_getfield(state, -1, p->luaClassName);
+	lua_getfield(state, -1, Object);
 	if (lua_isnil(state, -1)) {
-		printf("ElementName not found!\n");
+		printf("`%s` not found in Global table `%s`!\n", Object, Global);
 		lua_settop(state, -2);
 		return;
 	}
-	lua_getfield(state, -1, "Think");
+	lua_getfield(state, -1, Function);
 	if (lua_isnil(state, -1)) {
-		printf("Think not found!\n");
+		printf("Function `%s` not found in Object `%s` under Global table `%s`!\n", Function, Object, Global);
 		lua_settop(state, -3);
 		return;
 	}
 	if (!lua_isfunction(state, -1)) {
-		printf("Think is not a function for some reason...");
+		printf("`%s` is not a function!\n", Function);
 		lua_settop(state, -3);
 		return;
 	}
-	LuaPushEnt(p);
+	if(ent)
+		LuaPushEnt(ent);
 	int err = lua_pcall(state, 1, 0, 0);
+
+	if (err == LUA_ERRRUN)
+		printf("ERRRUN\n");
+	if (err == LUA_ERRMEM)
+		printf("ERRMEM\n");
+	if (err == LUA_ERRERR)
+		printf("ERRERR\n");
+	lua_settop(state, -3);
+}
+
+static int LuaCallGlobalObjectFunction(const char* Global, const char* Object, const char* Function) {
+	LuaCallGlobalObjectFunctionWithEnt(Global, Object, Function, NULL);
+}
+
+static int LuaCallEntityFunction(edict_t* ent, const char* FunctionName) {
+	LuaCallGlobalObjectFunctionWithEnt("Entity", ent->classname, FunctionName, ent);
+}
+
+static int LuaThink(edict_t* p) {
+	LuaCallEntityFunction(p, "Think");
 }
 
 static int LuaMove(lua_State* L) {
 	double Dist = lua_tonumber(L, -1);
 	lua_pop(L, 1);
-	double Direction = lua_tonumber(L, -2);
+	double Direction = lua_tonumber(L, -1);
 	lua_pop(L, 1);
 	lua_getfield(L, -1, "entId");
 	char* entId = lua_tostring(L, -1);
 	lua_pop(L, 2);
 	edict_t* ent = EntityListFind(entId);
-	//ent->flags |= FL_FLY;
 	M_walkmove(ent, Direction, Dist);
+}
+
+static int LuaLook(lua_State* L) {
+	double Direction = lua_tonumber(L, -1);
+	lua_pop(L, 1);
+	lua_getfield(L, -1, "entId");
+	char* entId = lua_tostring(L, -1);
+	lua_pop(L, 2);
+	edict_t* ent = EntityListFind(entId);
+	ent->s.angles[YAW] = Direction;
+}
+
+void LuaUse(edict_t *p) {
+	LuaCallEntityFunction(p, "Use");
 }
 
 static int LuaPrint(lua_State* L) {
@@ -268,6 +283,14 @@ static int LuaPrint(lua_State* L) {
 		}
 	}
 	printf("\n");
+}
+
+static int LuaGetEntByName(lua_State* L) {
+	const char* Name = lua_tostring(L, -1);
+	lua_pop(L, 1);
+	edict_t* Ent = EntityListFind(Name);
+	LuaPushEnt(Ent);
+	return 1;
 }
 
 static int LuaSetModel(lua_State* L) {

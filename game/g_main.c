@@ -409,8 +409,6 @@ void G_RunFrame (void)
 			ClientBeginServerFrame (ent);
 			continue;
 		}
-		if (ent->luaClassName)
-			printf("Running Lua Entity\n");
 		G_RunEntity (ent);
 		if (ent->luaClassName && ent->think)
 			ent->think(ent);

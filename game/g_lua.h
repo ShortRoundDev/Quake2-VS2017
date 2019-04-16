@@ -23,9 +23,10 @@ void LuaInit(void);
 void LuaDestroy(void);
 void LuaCreateDom(char* ElementName);
 int LuaCreateEntityType(char* EntityName);
+void LuaCreateGlobalTable(char* Global, char* Table);
 void LuaLoadScript(char* ScriptName);
 void LuaRunInitScript(char* ElementName);
-void LuaInitEntity(char* EntityName, edict_t* ent);
+void LuaInitEntity(edict_t* ent);
 void __LuaStackDump (lua_State *L);
 
 //Table Manipulation
@@ -42,9 +43,15 @@ static int Reg_CloseMenu(lua_State *L);
 //Library functions
 int sp_LuaSpawn(edict_t* ent);
 static int LuaPrint(lua_State* L);
+static int LuaGetEntByName(lua_State* L);
 static int LuaSetModel(lua_State* L);
+static int LuaCallGlobalObjectFunction(const char* Global, const char* Object, const char* Function);
+static int LuaCallGlobalObjectFunctionWithEnt(const char* Global, const char* Object, const char* Function, edict_t* ent);
+static int LuaCallEntityFunction(edict_t* ent, const char* Function);
 static int LuaThink(edict_t* p);
 static int LuaMove(lua_State* L);
+static int LuaLook(lua_State* L);
+void LuaUse(edict_t *ent);
 
 //Entity List functions
 void EntityListAdd(edict_t* ent);

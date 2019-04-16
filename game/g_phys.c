@@ -834,8 +834,6 @@ void SV_Physics_Step (edict_t *ent)
 		wasonground = true;
 	else
 		wasonground = false;
-	if(ent->luaClassName)
-		printf("Was on ground: %d\n", wasonground);
 		
 	if (ent->avelocity[0] || ent->avelocity[1] || ent->avelocity[2])
 		SV_AddRotationalFriction (ent);
@@ -940,8 +938,6 @@ void G_RunEntity (edict_t *ent)
 {
 	if (ent->prethink)
 		ent->prethink (ent);
-	if (ent->luaClassName)
-		printf("Move type: %d\n", ent->movetype);
 	switch ( (int)ent->movetype)
 	{
 	case MOVETYPE_PUSH:

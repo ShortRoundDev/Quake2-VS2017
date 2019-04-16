@@ -18,6 +18,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 #include "g_local.h"
+#include "g_lua.h"
 #include "m_player.h"
 #include "m_soldier.h"
 
@@ -108,13 +109,15 @@ The normal starting point for a level.
 */
 void SP_info_player_start(edict_t *self)
 {
-	self->s.modelindex = gi.modelindex ("models/items/coke/coke.md2");
+	self->s.modelindex = gi.modelindex("models/monsters/soldier/tris.md2");
 	if (self->entId != NULL) {
 		printf("%s\n", self->entId);
 	}
 	else {
 		printf("NO ENT ID ON SPAWN!\n");
 	}
+	self->entId = "Player_start";
+	EntityListAdd(self);
 	self->think = MovePlayerEnt;
 	self->speed = 99999;
 	self->accel = 99999;
@@ -169,10 +172,10 @@ void MovePlayerEnt(edict_t *player) {
 		frame = 0;
 	}
 	
-	angle = atan2(Ydiff, Xdiff);
+	/*angle = atan2(Ydiff, Xdiff);
 	angle = (angle / 3.14159) * 180; //pi
 
-	player->s.angles[YAW] = angle;
+	player->s.angles[YAW] = angle;*/
 }
 
 /*QUAKED info_player_deathmatch (1 0 1) (-16 -16 -24) (16 16 32)

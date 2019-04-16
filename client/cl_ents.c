@@ -1431,7 +1431,7 @@ void CL_CalcViewValues (void)
 
 	/* COLLIN: CL.refdef is the main struct for view angle and camera origin.
 	THIS position here is the last stop for these before rendering.
-	cl.refdef.origin sets camera position and cl.refdef.viewangles sets the
+	cl.refdef.vieworg sets camera position and cl.refdef.viewangles sets the
 	camera angles */
 	cl.refdef.vieworg[0] -= 150;
 	cl.refdef.vieworg[2] += 150;

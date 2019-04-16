@@ -20,12 +20,15 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // cl.input.c  -- builds an intended movement command to send to the server
 
 #include "client.h"
+#include "../game/game.h"
 
 cvar_t	*cl_nodelta;
 
 extern	unsigned	sys_frame_time;
 unsigned	frame_msec;
 unsigned	old_sys_frame_time;
+
+extern struct game_export_s* ge;
 
 /*
 ===============================================================================
@@ -297,6 +300,8 @@ void CL_BaseMove (usercmd_t *cmd)
 		cmd->forwardmove += cl_forwardspeed->value * CL_KeyState (&in_forward);
 		cmd->forwardmove -= cl_forwardspeed->value * CL_KeyState (&in_back);
 	}	
+	
+
 
 //
 // adjust for speed key / running
@@ -307,6 +312,15 @@ void CL_BaseMove (usercmd_t *cmd)
 		cmd->sidemove *= 2;
 		cmd->upmove *= 2;
 	}	
+
+	if (ge && ge->player) {
+		if (cmd->sidemove == 0 && cmd->forwardmove == 0)
+			return;
+		float angle = atan2(cmd->sidemove, cmd->forwardmove);
+		angle = (-angle / 3.14159) * 180; //pi
+		ge->player->s.angles[YAW] = angle;
+	}
+
 }
 
 void CL_ClampPitch (void)
