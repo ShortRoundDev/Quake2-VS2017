@@ -51,6 +51,7 @@ static int LuaCallEntityFunction(edict_t* ent, const char* Function);
 static int LuaThink(edict_t* p);
 static int LuaMove(lua_State* L);
 static int LuaLook(lua_State* L);
+static int LuaMenuBindWithModel(lua_State* L);
 void LuaUse(edict_t *ent);
 
 //Entity List functions

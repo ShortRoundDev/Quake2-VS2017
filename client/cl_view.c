@@ -31,6 +31,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 int			gun_frame;
 struct model_s	*gun_model;
 
+struct image_s *textImage;
+
 //=============
 
 cvar_t		*crosshair;
@@ -584,29 +586,48 @@ void DrawItem(struct MenuRenderItem *Item) {
 void DrawMenuText(struct MenuRenderItem *Item) {
 	if (Item->Body == NULL)
 		return;
+	if (textImage == NULL) {
+		textImage = re.RegisterPic("menutext");
+	}
 	size_t Length = strlen(Item->Body);
 	for (int i = 0; i < Length; i++) {
 		if (!(Item->Body[i] >= 'a' && Item->Body[i] <= 'z'))
 			continue;
-		char *Path = calloc(strlen("text/a") + 1, sizeof(char));
-		strcpy(Path, "text/");
-		size_t Directory = strlen("text/");
-		Path[Directory] = Item->Body[i];
 		
-		printf("%d\n", Item->X);
-		re.DrawStretchPic(
-			((Item->Parent->X + ((i + 1) * 16)) % Item->Parent->W),
-			Item->Parent->Y + (((Item->Parent->X + (i * 16)) / Item->Parent->W) + 2) * 16,
-			16,
-			16,
-			Path
+
+		//TODO: Extend DrawCharto accept a new charsheet struct
+		//Which defines the dimensions of the character sheet
+		//To avoid the lookup done in DrawStretchPic
+
+		//struct image_s* FontImage = textImage;
+		struct MenuRenderFont* Font = NULL;
+		if (Item->Parent->Font != NULL && Item->Parent->Font->FontImage != NULL) {
+			Font = Item->Parent->Font;
+		}
+		else {
+			Font = calloc(1, sizeof(struct MenuRenderFont));
+			Font->Width = 16;
+			Font->Height = 16;
+			Font->Offset = 0;
+			Font->FontImage = textImage;
+		}
+		//TODO: This calculation is fucked up. Also add padding
+		re.DrawSpriteSheet(
+			(Item->Parent->X + (int)((i + 1) * (Font->Width * 1.0f)) % Item->Parent->W),
+			Item->Parent->Y + (((Item->Parent->X + (i * (int)(Font->Width * 1.0f))) / Item->Parent->W) + 2) * (int)(Font->Width * 1.0f),
+			Item->Body[i],
+			Font->Width,
+			Font->Height,
+			Font->Offset,
+			1.0f,
+			Font->FontImage
 		);
-		free(Path);
 	}
 }
 
 void DrawStack(struct MenuRenderQueue *Queue) {
 	struct MenuRenderQueueNode *Cursor = Queue->Bottom;
+
 	while(Cursor != NULL) {
 		DrawTree(Cursor->Value);
 		Cursor = Cursor->Next;

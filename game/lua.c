@@ -1,4 +1,5 @@
 #include "g_lua.h"
+#include "menu.h"
 #include "g_local.h"
 //lua_State* state;
 
@@ -24,6 +25,9 @@ void LuaInit(void) {
 
 	lua_pushcfunction(state, LuaGetEntByName);
 	lua_setglobal(state, "GetByName");
+
+	lua_pushcfunction(state, LuaMenuBindWithModel);
+	lua_setglobal(state, "OpenMenu");
 
 	LuaLoadScript("baseq2/scripts/main.lua");
 
@@ -178,7 +182,7 @@ int sp_LuaSpawn(edict_t* ent) {
 	VectorSet(ent->maxs, 16, 16, 32);
 	ent->movetype = MOVETYPE_STEP;
 	ent->solid = SOLID_BBOX;
-	gi.linkentity(ent);
+gi.linkentity(ent);
 }
 
 static int LuaCallGlobalObjectFunctionWithEnt(const char* Global, const char* Object, const char* Function, edict_t* ent) {
@@ -199,7 +203,7 @@ static int LuaCallGlobalObjectFunctionWithEnt(const char* Global, const char* Ob
 	}
 
 	if (Kill)
-		return -1;
+	return -1;
 
 	lua_getglobal(state, Global);
 	if (lua_isnil(state, -1)) {
@@ -224,16 +228,16 @@ static int LuaCallGlobalObjectFunctionWithEnt(const char* Global, const char* Ob
 		lua_settop(state, -3);
 		return;
 	}
-	if(ent)
-		LuaPushEnt(ent);
+	if (ent)
+	LuaPushEnt(ent);
 	int err = lua_pcall(state, 1, 0, 0);
 
 	if (err == LUA_ERRRUN)
-		printf("ERRRUN\n");
+	printf("ERRRUN\n");
 	if (err == LUA_ERRMEM)
-		printf("ERRMEM\n");
+	printf("ERRMEM\n");
 	if (err == LUA_ERRERR)
-		printf("ERRERR\n");
+	printf("ERRERR\n");
 	lua_settop(state, -3);
 }
 
@@ -269,6 +273,56 @@ static int LuaLook(lua_State* L) {
 	lua_pop(L, 2);
 	edict_t* ent = EntityListFind(entId);
 	ent->s.angles[YAW] = Direction;
+}
+
+static int LuaMenuBindWithModel(lua_State* L) {
+	struct ModelDictionary* Model = NULL;
+	if (lua_istable(L, -1)) {
+		int ModelSize = 0;
+		lua_pushnil(L);
+
+		while (lua_next(L, -2 - (ModelSize * 2)) != 0) {
+			char* Key = lua_tostring(L, -2);
+			lua_pushstring(L, Key);
+			ModelSize++;
+		}
+		printf("Modelsize: %d\n", ModelSize);
+		__LuaStackDump(L);
+
+
+		Model = calloc(sizeof(struct ModelDictionary), 1);
+		Model->Dictionary = calloc(sizeof(struct ModelDictionaryEntry), ModelSize);
+		Model->Size = ModelSize;
+
+		for(int i = ModelSize; i > 0; i--) {
+			if (lua_istable(L, -1)) {
+				break;
+			}
+			char* Value = lua_tostring(L, -1);
+			printf("Value: %s\n", Value);
+			InsertInDictionary(
+				Model,
+				lua_tostring(L, -2),
+				Value
+			);
+
+			Model->BufferSize += strlen(Value);
+
+			lua_pop(L, 2);
+		}
+	}
+	else if (!lua_isnil(L, -1)) {
+		printf("ERROR: To open a menu without binding a model, pass `nil` for the model\n");
+		return 0;
+	}
+	//Pop Table or Nil, whatever
+	lua_pop(L, 1);
+
+	char* XML = lua_tostring(L, -1);
+	char* Interpolated = Interpolate(XML, Model);
+	DestroyDictionary(Model);
+	OpenMenuFromString(&Queue, Interpolated);
+	free(Interpolated);
 }
 
 void LuaUse(edict_t *p) {

@@ -87,6 +87,40 @@ void Draw_Char (int x, int y, int num)
 	qglEnd ();
 }
 
+void Draw_Sprite_Sheet(int x, int y, int sprite, int Width, int Height, int Offset, float Scale, struct image_s* sheet) {
+	int				row, col;
+	float			frow, fcol, size;
+
+	sprite &= 255;
+
+	if (y <= -Width)
+		return;			// totally off screen
+
+	int Charnum = sprite - Offset;
+	int NumCols = sheet->width / Width;
+
+	row = (Charnum / NumCols);
+	col = (Charnum % NumCols);
+
+	frow = row * (1.0f / 4.0f);
+	fcol = col * (1.0f / 32.0f);
+
+	float SizeX = 1.0f / 32.0f;
+	float SizeY = 1.0f / 4.0f;
+
+	GL_Bind(sheet->texnum);
+	qglBegin(GL_QUADS);
+	qglTexCoord2f(fcol, frow);
+	qglVertex2f(x, y);
+	qglTexCoord2f(fcol + SizeX, frow);
+	qglVertex2f(x + (Width * Scale), y);
+	qglTexCoord2f(fcol + SizeX, frow + SizeY);
+	qglVertex2f(x + (Width * Scale), y + (Height * Scale));
+	qglTexCoord2f(fcol, frow + SizeY);
+	qglVertex2f(x, y + (Height * Scale));
+	qglEnd();
+}
+
 /*
 =============
 Draw_FindPic
@@ -112,10 +146,7 @@ image_t	*Draw_FindPic (char *name)
 	else {
 		gl = GL_FindImage(name + 1, it_pic);
 		if (gl == NULL) {
-			gl = GL_FindImage(name + 1, it_pic);
-			if (gl == NULL) {
-				printf("Couldn't open tga file either!");
-			}
+			printf("Couldn't find file!");
 		}
 	}
 	return gl;

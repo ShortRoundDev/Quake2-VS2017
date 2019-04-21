@@ -19,6 +19,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 // disable data conversion warnings
 
+#ifndef __gl_local_h
+#define __gl_local_h
+
 #if 0
 #pragma warning(disable : 4244)     // MIPS
 #pragma warning(disable : 4136)     // X86
@@ -315,6 +318,8 @@ void	Draw_GetPicSize (int *w, int *h, char *name);
 void	Draw_Pic (int x, int y, char *name);
 void	Draw_StretchPic (int x, int y, int w, int h, char *name);
 void	Draw_Char (int x, int y, int c);
+void	Draw_Sprite_Sheet(int x, int y, int sprite, struct image_s* sheet);
+
 void	Draw_TileClear (int x, int y, int w, int h, char *name);
 void	Draw_Fill (int x, int y, int w, int h, int c);
 void	Draw_FadeScreen (void);
@@ -458,3 +463,4 @@ void		GLimp_AppActivate( qboolean active );
 void		GLimp_EnableLogging( qboolean enable );
 void		GLimp_LogNewFrame( void );
 
+#endif

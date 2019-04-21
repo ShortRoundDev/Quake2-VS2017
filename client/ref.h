@@ -18,6 +18,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 
+#pragma once
+
 #include "../qcommon/qcommon.h"
 
 #define	MAX_DLIGHTS		32
@@ -128,7 +130,7 @@ typedef struct
 //
 // these are the functions exported by the refresh module
 //
-typedef struct
+typedef struct refexport_s
 {
 	// if api_version is different, the dll cannot be used
 	int		api_version;
@@ -165,6 +167,8 @@ typedef struct
 	void	(*DrawPic) (int x, int y, char *name);
 	void	(*DrawStretchPic) (int x, int y, int w, int h, char *name);
 	void	(*DrawChar) (int x, int y, int c);
+	void	(*DrawSpriteSheet) (int x, int y, int sprite, int Width, int Height, int Offset, float Scale, struct image_s* sheet);
+
 	void	(*DrawTileClear) (int x, int y, int w, int h, char *name);
 	void	(*DrawFill) (int x, int y, int w, int h, int c);
 	void	(*DrawFadeScreen) (void);

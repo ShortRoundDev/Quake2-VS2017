@@ -26,7 +26,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 game_export_t	*ge;
 extern refexport_t re;
 
-
 /*
 ===============
 PF_Unicast
@@ -406,6 +405,8 @@ void SV_InitGameProgs (void)
 
 	import.GetCursorPos = SV_GetCursorPos;
 	import.ProjectCursor = ProjectCursor;
+
+	import.re = &re;
 
 	ge = (game_export_t *)Sys_GetGameAPI (&import);
 

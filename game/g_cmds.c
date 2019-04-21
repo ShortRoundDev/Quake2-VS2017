@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "g_lua.h"
 #include "m_player.h"
 #include "menu.h"
-void my_fire_blaster (edict_t *self, vec3_t start, vec3_t dir, int damage, int speed, int effect, qboolean hyper);
+void my_fire_blaster (edict_t *self, vec3_t start, vec3_t dir, int damage, int speed, int effect, qboolean _hyper);
 void my_blaster_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf);
 
 
@@ -698,7 +698,7 @@ void Cmd_Players_f (edict_t *ent)
 {
 	int		i;
 	int		count;
-	char	small[64];
+	char	_small[64];
 	char	large[1280];
 	int		index[256];
 
@@ -718,15 +718,15 @@ void Cmd_Players_f (edict_t *ent)
 
 	for (i = 0 ; i < count ; i++)
 	{
-		Com_sprintf (small, sizeof(small), "%3i %s\n",
+		Com_sprintf (_small, sizeof(_small), "%3i %s\n",
 			game.clients[index[i]].ps.stats[STAT_FRAGS],
 			game.clients[index[i]].pers.netname);
-		if (strlen (small) + strlen(large) > sizeof(large) - 100 )
+		if (strlen (_small) + strlen(large) > sizeof(large) - 100 )
 		{	// can't print all of them in one packet
 			strcat (large, "...\n");
 			break;
 		}
-		strcat (large, small);
+		strcat (large, _small);
 	}
 
 	gi.cprintf (ent, PRINT_HIGH, "%s\n%i players\n", large, count);
@@ -900,7 +900,7 @@ void use_lua(edict_t *ent) {
 	}
 }
 
-void my_fire_blaster (edict_t *self, vec3_t start, vec3_t dir, int damage, int speed, int effect, qboolean hyper)
+void my_fire_blaster (edict_t *self, vec3_t start, vec3_t dir, int damage, int speed, int effect, qboolean _hyper)
 {
 	edict_t	*bolt;
 	trace_t	tr;
@@ -932,7 +932,7 @@ void my_fire_blaster (edict_t *self, vec3_t start, vec3_t dir, int damage, int s
 	bolt->think = G_FreeEdict;
 	bolt->dmg = damage;
 	bolt->classname = "bolt";
-	if (hyper)
+	if (_hyper)
 		bolt->spawnflags = 1;
 	gi.linkentity (bolt);
 
@@ -1191,6 +1191,8 @@ void ClientCommand (edict_t *ent)
 		Cmd_Wave_f(ent);
 	else if (Q_stricmp(cmd, "identify") == 0)
 		Cmd_Identify_f(ent);
+	else if (Q_stricmp(cmd, "luaDump") == 0)
+		__LuaStackDump(state);
 	else if (Q_stricmp(cmd, "uselua") == 0)
 		use_lua(ent);
 	else if (Q_stricmp (cmd, "menu") == 0)

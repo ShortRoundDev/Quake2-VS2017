@@ -342,7 +342,7 @@ void blaster_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *
 	G_FreeEdict (self);
 }
 
-void fire_blaster (edict_t *self, vec3_t start, vec3_t dir, int damage, int speed, int effect, qboolean hyper)
+void fire_blaster (edict_t *self, vec3_t start, vec3_t dir, int damage, int speed, int effect, qboolean _hyper)
 {
 	edict_t	*bolt;
 	trace_t	tr;
@@ -374,7 +374,7 @@ void fire_blaster (edict_t *self, vec3_t start, vec3_t dir, int damage, int spee
 	bolt->think = G_FreeEdict;
 	bolt->dmg = damage;
 	bolt->classname = "bolt";
-	if (hyper)
+	if (_hyper)
 		bolt->spawnflags = 1;
 	gi.linkentity (bolt);
 

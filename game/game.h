@@ -1,5 +1,6 @@
 #pragma once
 #include "../game/menu.h"
+#include "../client/ref.h"
 /*
 Copyright (C) 1997-2001 Id Software, Inc.
 
@@ -201,6 +202,8 @@ typedef struct
 	void	(*PLook) (float pitch, float yaw, float roll, edict_t* ent);
 
 	void	(*ProjectCursor) (long x, long y, float *vector);
+
+	refexport_t* re;
 
 } game_import_t;
 //
